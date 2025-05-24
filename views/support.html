@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고객센터</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #1a1a1a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .faq-header {
+            background-color: #1a1a1a;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffff;
+        }
+
+        .faq-item {
+
+            padding: 16px 20px;
+            border-bottom: 1px solid #ddd;
+            color: #ffff;
+            background-color: #1a1a1a;
+        }
+
+        .faq-item .q {
+            font-weight: bold;
+            width: 40px;
+            color: #ffff;
+        }
+
+        .faq-item .a {
+            flex: 1;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #444;
+            padding: 16px 20px;
+            cursor: pointer;
+            background-color: #1a1a1a;
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .q {
+            color: #fff;
+        }
+
+        .text {
+            color: #fff;
+        }
+
+        .faq-answer {
+            display: none;
+            margin-top: 12px;
+            color: #ccc;
+            font-size: 14px;
+            padding-left: 25px;
+        }
+
+        .a {
+            font-weight: bold;
+            margin-right: 5px;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="faq-header">FAQ</div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span class="q">Q.</span>
+                <span class="text">주문 취소하면 적립금/쿠폰도 원상복구가 되나요?</span>
+            </div>
+            <div class="faq-answer">
+                <span class="a">A.</span> 대답이 적힐 공간입니다
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span class="q">Q.</span>
+                <span class="text">상품 품절로 취소 안내를 받았습니다.</span>
+            </div>
+            <div class="faq-answer">
+                <span class="a">A.</span> 대답이 적힐 공간입니다
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span class="q">Q.</span>
+                <span class="text">고객센터 운영시간은 언제인가요?</span>
+            </div>
+            <div class="faq-answer">
+                <span class="a">A.</span> 대답이 적힐 공간입니다
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span class="q">Q.</span>
+                <span class="text">무통장 입금 계좌 안내</span>
+            </div>
+            <div class="faq-answer">
+                <span class="a">A.</span> 대답이 적힐 공간입니다
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span class="q">Q.</span>
+                <span class="text">교환/반품 안내</span>
+            </div>
+            <div class="faq-answer">
+                <span class="a">A.</span> 대답이 적힐 공간입니다
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                <span class="q">Q.</span>
+                <span class="text">배송 택배사 안내</span>
+            </div>
+            <div class="faq-answer">
+                <span class="a">A.</span> 대답이 적힐 공간입니다
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleFaq(el) {
+            const answer = el.querySelector(".faq-answer");
+            const isVisible = answer.style.display === "block";
+            answer.style.display = isVisible ? "none" : "block";
+        }
+    </script>
+</body>
+
+</html>

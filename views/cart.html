@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>장바구니</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #1a1a1a;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: #fff;
+    }
+
+    .cart-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 60px 80px;
+      gap: 40px;
+    }
+
+    .cart-left {
+      flex: 2;
+    }
+
+    .cart-right {
+      flex: 1;
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1f1f1f;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    th {
+      background-color: #2a2a2a;
+      font-weight: 600;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 18px;
+      color: #aaa;
+    }
+
+    .cart-right p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .total {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .total strong {
+      color: #ff5555;
+      font-size: 20px;
+    }
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      margin-top: 30px;
+      background-color: #007bff;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background-color: #0064d6;
+    }
+
+    .info-tip {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #ccc;
+      text-align: center;
+    }
+
+    .info-tip a {
+      color: #66b0ff;
+      text-decoration: underline;
+    }
+
+    @media screen and (max-width: 960px) {
+      .cart-container {
+        flex-direction: column;
+        padding: 40px 20px;
+      }
+
+      .cart-right {
+        margin-top: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cart-container">
+    <!-- 좌측 장바구니 상품 영역 -->
+    <div class="cart-left">
+      <h2>장바구니</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>상품</th>
+            <th>수량</th>
+            <th>금액</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 상품이 없을 경우 -->
+          <tr>
+            <td colspan="3" class="empty-cart">장바구니에 담긴 상품이 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 우측 결제 요약 영역 -->
+    <div class="cart-right">
+      <p>상품(0개): <strong>0원</strong></p>
+      <p>배송비: <strong>0원</strong></p>
+      <div class="total">
+        총 결제금액 : <strong>0원</strong>
+      </div>
+      <button class="checkout-btn">주문하기</button>
+      <div class="info-tip">
+        +30,000원 더 주문 시 무료배송<br>
+        <a href="#">사은품 혜택보기</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
