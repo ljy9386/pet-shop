@@ -202,7 +202,7 @@
     // ✅ 카카오 간편 로그인 팝업 방식
     document.getElementById("kakao-login-btn").addEventListener("click", function () {
       Kakao.Auth.login({
-        scope: "profile_nickname, account_email",
+        scope: "profile_nickname",
         success: function (authObj) {
           Kakao.API.request({
             url: "/v2/user/me",
