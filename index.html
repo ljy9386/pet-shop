@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Miracle Group</title>
+  <!-- 폰트 링크 -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      height: 100%;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    video#bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* 메인 헤더 */
+    .main-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffff(0, 0, 0, 0.4);
+      z-index: 999;
+    }
+
+    .main-header .logo-area {
+      margin: 0;
+    }
+
+    .main-header .logo-area img {
+      height: 50px;
+    }
+
+    .main-header .top-nav a {
+      margin-left: 15px;
+      font-size: 14px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .hamburger {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hamburger div {
+      width: 30px;
+      height: 3px;
+      background-color: white;
+    }
+
+    /* 메뉴 슬라이드 */
+    #menu-toggle {
+      display: none;
+    }
+
+    .menu-slide {
+      position: fixed;
+      top: 38px;
+      left: 100px;
+      display: flex;
+      gap: 25px;
+      transition: transform 0.4s ease-in-out;
+      transform: translateX(-200%);
+      z-index: 999;
+    }
+
+
+    #menu-toggle:checked~.menu-slide {
+      transform: translateX(0);
+    }
+
+    .menu-slide a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* 중앙 텍스트 */
+    .main-text {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .main-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 60px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .main-text h2 {
+      font-size: 32px;
+      font-weight: normal;
+      margin-bottom: 60px;
+    }
+
+    .main-text h3 {
+      font-size: 24px;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    .main-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid white;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .main-btn:hover {
+      background-color: white;
+      color: black;
+    }
+
+    .site-footer {
+      position: fixed;
+      /* ← 이걸로 바꿔 */
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      line-height: 1.8;
+      background: #ffff(0, 0, 0, 0.3);
+      padding-bottom: 5px;
+    }
+
+    .site-footer .footer-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+    }
+
+    .site-footer a {
+      color: #ccc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 배경 영상 -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="img/dog.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+
+  <!-- 상단 통합 헤더 -->
+  <header class="main-header">
+    <div class="hamburger" onclick="document.getElementById('menu-toggle').click()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="logo-area">
+      <img src="img/logo.png" alt="Miracle Group 로고">
+    </div>
+    <nav class="top-nav">
+      <a href="login.html" id="login-link">로그인</a>
+      <a href="signup.html" id="signup-link">회원가입</a>
+      <a href="account-details.html" id="mypage-link" style="display: none;">마이페이지</a>
+
+    </nav>
+  </header>
+
+  <!-- 메뉴 토글 및 슬라이드 메뉴 -->
+  <input type="checkbox" id="menu-toggle" />
+  <div class="menu-slide">
+    <a href="company.html">회사소개</a>
+    <a href="service.html">상조서비스</a>
+    <a href="funeral.html">장례서비스</a>
+    <a href="https://www.jindallae.kr/" target="_blank">추모공원</a>
+    <a href="products.html">쇼핑몰</a>
+  </div>
+
+  <!-- 중앙 텍스트 -->
+  <div class="main-text">
+    <h1>Miracle Group</h1>
+    <h2>당신의 반려동물을 위한 공간</h2>
+    <h3>반려동물의 처음부터 마지막까지 함께합니다</h3>
+    <a href="https://open.kakao.com/o/sEJKz8wh" target="_blank"
+      style="display: inline-flex; align-items: center; padding: 10px 20px; border: 1px solid #ffff; border-radius: 30px; font-size: 16px; text-decoration: none; color: #ffff; margin-top: 20px;">
+      멤버십 가입 문의
+      <img src="img/kakao.png" alt="카카오톡 아이콘" style="height: 20px; margin-left: 10px;">
+    </a>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-row">
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="youth-policy.html">청소년보호정책</a>
+      <a href="support.html">고객센터</a>
+    </div>
+    <div class="footer-row">
+      <span>미라클그룹반려상조</span>
+      <span>주소: 서울특별시 강남구 선릉로 533</span>
+      <span>대표전화: 02-566-1121</span>
+    </div>
+  </footer>
+<script>
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const loginLink = document.getElementById("login-link");
+  const signupLink = document.getElementById("signup-link");
+  const mypageLink = document.getElementById("mypage-link");
+
+  if (user) {
+    // 로그인 상태일 때
+    loginLink.style.display = "none";
+    signupLink.style.display = "none";
+    mypageLink.style.display = "inline-block";
+  } else {
+    // 비로그인 상태일 때
+    loginLink.style.display = "inline-block";
+    signupLink.style.display = "inline-block";
+    mypageLink.style.display = "none";
+  }
+</script>
+
+</body>
+
+</html>

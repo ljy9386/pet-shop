@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>회원정보 수정</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #fff;
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 60px 30px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #555;
+      padding-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 16px;
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 14px;
+      width: 100%;
+      background: #00a86b;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>회원정보 수정</h2>
+    <form id="edit-form">
+      <label for="phone">전화번호</label>
+      <input type="text" id="phone" placeholder="010-0000-0000" required />
+
+      <label for="address">주소</label>
+      <input type="text" id="address" placeholder="주소" required />
+
+      <label for="postal">우편번호</label>
+      <input type="text" id="postal" placeholder="우편번호" required />
+
+      <label for="password">새 비밀번호</label>
+      <input type="password" id="password" placeholder="변경할 비밀번호 (선택)" />
+
+      <button type="submit">저장하기</button>
+    </form>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      location.href = "login.html";
+    }
+
+    document.getElementById("phone").value = user.phone;
+    document.getElementById("address").value = user.address;
+    document.getElementById("postal").value = user.postalCode;
+
+    document.getElementById("edit-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const postalCode = document.getElementById("postal").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        const res = await fetch("/api/user/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user.user_id,
+            phone,
+            address,
+            postalCode,
+            ...(password && { password })
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) return alert(data.message || "수정 실패");
+
+        alert("회원정보가 수정되었습니다.");
+        location.href = "account-details.html";
+      } catch (err) {
+        console.error("수정 오류:", err);
+        alert("서버 오류 발생");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>반려동물 장례 서비스</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .hero {
+            background-image: url('img/backdog.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            align-items: flex-start;
+            /* ← 위로 붙임 */
+            padding-top: 80px;
+            /* ← 위쪽 간격 조정 */
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .fade-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .fade-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content {
+            max-width: 900px;
+            margin: auto;
+            padding: 100px 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: block;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+
+        .hero h2 {
+            font-size: 36px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .section h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .section p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .service-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 300px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-card h4 {
+            margin-top: 0;
+            color: #1a1a1a;
+        }
+
+        .service-card p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .hamburger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hamburger div {
+            width: 30px;
+            height: 3px;
+            background-color: white;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        .menu-slide {
+            position: fixed;
+            top: 20px;
+            left: 100px;
+            display: flex;
+            gap: 25px;
+            transform: translateX(-200%);
+            transition: transform 0.4s ease-in-out;
+            z-index: 999;
+        }
+
+        #menu-toggle:checked~.menu-slide {
+            transform: translateX(0);
+        }
+
+        .menu-slide a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .image-section img {
+            width: 100%;
+            display: block;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="img/logo.png" alt="Miracle Group 로고" style="height: 60px; margin-bottom: 10px;">
+    </header>
+    <input type="checkbox" id="menu-toggle" />
+    <label for="menu-toggle" class="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+    </label>
+
+    <div class="menu-slide">
+        <a href="index.html">홈</a>
+        <a href="company.html">회사소개</a>
+        <a href="funeral.html">장례서비스</a>
+        <a href="https://www.jindallae.kr/" target="_blank">추모공원</a>
+        <a href="products.html">쇼핑몰</a>
+    </div>
+
+
+    <div class="hero">
+        <h2>사랑하는 반려동물과의 마지막 작별을 위한 특별한 서비스</h2>
+    </div>
+
+    <div class="section">
+        <h3>서비스 소개</h3>
+        <p>
+            Miracle Group은 반려동물과 보호자님이 함께한 소중한 시간을 기리기 위해 정성 어린 장례 서비스를 제공합니다.
+            전문 상담을 통해 최선의 선택을 도와드리며, 운구부터 발인까지 전 과정을 세심하게 지원합니다.
+        </p>
+    </div>
+
+    <div class="section" style="background: url('img/backdog2.jpg') no-repeat center center / cover; padding: 100px 20px;">
+        <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 60px; color: #1a1a1a;">서비스 소개</h2>
+
+        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 60px; flex-wrap: wrap;">
+            <div
+                style="background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #015c4b; font-weight: 600;">미라클펫 실버</h3>
+                <p style="margin: 20px 0;">필수 장례만 담은 실속형 상품<br><strong>월 19,800원 * 24개월</strong><br>총 475,200원</p>
+                <button style="padding: 10px 20px; border: 1px solid #ccc; background: none; cursor: pointer;">상품 구성
+                    보기</button>
+            </div>
+            <div
+                style="background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #015c4b; font-weight: 600;">미라클펫 골드</h3>
+                <p style="margin: 20px 0;">고급 장례 생각한 합리적 상품<br><strong>월 22,000원 * 36개월</strong><br>총 792,000원</p>
+                <button style="padding: 10px 20px; border: 1px solid #ccc; background: none; cursor: pointer;">상품 구성
+                    보기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 히든 블루 멤버십 -->
+
+    <div class="section" style="padding: 80px 20px; background-color: white;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <img src="img/logo.png" alt="미라클 로고" style="height: 60px; margin-bottom: 20px;">
+            <h2 style="font-size: 32px; font-weight: 700; color: #000; margin: 0;">프리미엄 반려동물 상조</h2>
+            <p style="font-size: 24px; color: #b26c6c; margin: 8px 0 24px;">히든 블루 멤버십</p>
+            <a href="https://open.kakao.com/o/sEJKz8wh" target="_blank"
+                style="display: inline-flex; align-items: center; padding: 10px 20px; border: 1px solid #000; border-radius: 30px; font-size: 16px; text-decoration: none; color: #000;">
+                멤버십 가입 문의
+                <img src="img/kakao.png" alt="카카오톡 아이콘" style="height: 20px; margin-left: 10px;">
+            </a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+            <div>
+                <img src="img/service01.png" style="width: 100%; border-radius: 8px;">
+                <p style="margin-top: 10px;">365일 상시할인 혜택 쇼핑</p>
+            </div>
+            <div>
+                <img src="img/service02.png" style="width: 100%; border-radius: 8px;">
+                <p style="margin-top: 10px;">국내외 여행 및 크루즈 상품</p>
+            </div>
+            <div>
+                <img src="img/service03.png" style="width: 100%; border-radius: 8px;">
+                <p style="margin-top: 10px;">제주/해외 골프장 최대 30% 할인</p>
+            </div>
+            <div>
+                <img src="img/service04.png" style="width: 100%; border-radius: 8px;">
+                <p style="margin-top: 10px;">전국 리조트, 콘도, 호텔 5,000곳 예약</p>
+            </div>
+            <div>
+                <img src="img/service05.png" style="width: 100%; border-radius: 8px;">
+                <p style="margin-top: 10px;">검진병원 연계 건강검진 서비스</p>
+            </div>
+            <div>
+                <img src="img/service06.png" style="width: 100%; border-radius: 8px;">
+                <p style="margin-top: 10px;">장례 서비스 + 영화관/렌터카 혜택</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>상담 및 예약</h3>
+        <p>장례 서비스에 대한 상담 및 예약은 아래 연락처로 문의해주세요.</p>
+        <p><strong>전화:</strong> 02-566-1121</p>
+    </div>
+
+    <footer>
+        &copy; 2025 Miracle Group. All rights reserved.
+    </footer>
+
+    <!--스크립트-->
+
+    <script>
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        });
+
+        sections.forEach(section => {
+            section.classList.add('fade-section');
+            observer.observe(section);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #1a1a1a;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      border-left: 5px solid #ffcc00;
+      padding-left: 10px;
+    }
+
+    .notice-item {
+      border-bottom: 1px solid #333;
+      padding: 20px;
+      cursor: pointer;
+    }
+
+    .notice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notice-title {
+      font-size: 16px;
+    }
+
+    .notice-date {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .notice-content {
+      display: none;
+      padding: 15px 0 5px 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .notice-item:hover {
+      background-color: #2a2a2a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">공지사항</div>
+
+    <div class="notice-item" onclick="toggleNotice(this)">
+      <div class="notice-header">
+        <span class="notice-title">[공지] 추석 연휴 배송 일정 안내</span>
+        <span class="notice-date">2024.09.01</span>
+      </div>
+      <div class="notice-content">향후 작성</div>
+    </div>
+
+    <div class="notice-item" onclick="toggleNotice(this)">
+      <div class="notice-header">
+        <span class="notice-title">[안내] 사이트 리뉴얼 작업 안내</span>
+        <span class="notice-date">2024.07.15</span>
+      </div>
+      <div class="notice-content">향후 작성</div>
+    </div>
+
+    <div class="notice-item" onclick="toggleNotice(this)">
+      <div class="notice-header">
+        <span class="notice-title">[이벤트] 신규 가입 5% 할인 쿠폰 증정</span>
+        <span class="notice-date">2024.06.01</span>
+      </div>
+      <div class="notice-content">향후 작성</div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleNotice(el) {
+      const content = el.querySelector(".notice-content");
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+    }
+  </script>
+</body>
+</html>

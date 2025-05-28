@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Miracle Pet Main</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #fff;
+        }
+
+        a {
+            color: #aaa;
+            text-decoration: none;
+            margin-right: 12px;
+            font-size: 13px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            background: #111;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo-area {
+            text-align: center;
+            padding: 30px 0 10px;
+            color: #eee;
+        }
+
+        .logo-area h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .menu-nav {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            background: #111;
+            gap: 25px;
+            font-size: 14px;
+            border-bottom: 1px solid #333;
+        }
+
+        .section-header {
+            font-size: 20px;
+            padding: 60px 0 10px;
+            color: #ffcad4;
+            text-align: center;
+        }
+
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding-bottom: 60px;
+        }
+
+        .product-card {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px #000;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-img {
+            background-color: #444;
+            width: 100%;
+            height: 220px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .product-name {
+            color: #f0f0f0;
+            font-size: 14px;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .sale {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .price {
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .origin {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .brand {
+            color: #7ecfff;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo-link {
+            display: flex;
+            flex-direction: column;
+            /* 위아래로 배치 (← 왼쪽 붙이려면 row) */
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-img {
+            width: 60px;
+            /* 로고 크기 조절 */
+            height: auto;
+            margin-bottom: 8px;
+            /* 텍스트와 로고 사이 간격 */
+        }
+
+        .logo-area h1 {
+            font-size: 32px;
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="top-nav">
+                <a href="login.html">로그인</a>
+                <a href="signup.html">회원가입</a>
+                <a href="cart.html">장바구니</a>
+            </div>
+            <div class="logo-area">
+                <a href="index.html" class="logo-link">
+                    <img src="img/logo.png" alt="로고" class="logo-img">
+                    <h1>Miracle Pet Shop</h1>
+                </a>
+            </div>
+
+            <nav class="menu-nav">
+                <a href="index.html">홈</a>
+                <a href="notice.html">공지사항</a>
+                <a href="products.html">반려용품</a>
+                <a href="support.html">고객센터</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="section-header">
+                신상품
+            </div>
+
+            <div class="product-list">
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row">
+                            <span class="sale">20%</span>
+                            <span class="price">33,000원</span>
+                            <span class="origin">42,000원</span>
+                        </div>
+                        <span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-desc">
+                        <p class="product-name">상품 이름이 여기에 표시됩니다</p>
+                        <div class="price-row"><span class="sale">20%</span><span class="price">33,000원</span><span
+                                class="origin">42,000원</span></div><span class="brand">브랜드명</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

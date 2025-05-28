@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #ccc;
+      font-family: Arial, sans-serif;
+      padding: 60px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 25px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      background: none;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      width: 100%;
+      padding: 8px 4px;
+      font-size: 14px;
+      color: #ccc;
+      margin-top: 5px;
+    }
+
+    .postal-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .postal-group input {
+      width: 70%;
+    }
+
+    .postal-group button {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .phone-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .phone-group input {
+      width: 32%;
+      text-align: center;
+    }
+
+    .terms-section {
+      margin-top: 25px;
+      font-size: 13px;
+    }
+
+    .save-btn {
+      display: block;
+      width: 100%;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      padding: 12px 0;
+      margin-top: 30px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .error {
+      color: #ff4d4d;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .link {
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .link a {
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .phone-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>회원가입</h2>
+
+    <form id="signup-form">
+      <label for="user_id">ID*</label>
+      <input type="text" id="user_id" name="user_id" placeholder="ID" required />
+
+      <label for="password">Password*</label>
+      <input type="password" id="password" name="password" placeholder="Password" required />
+
+      <label for="confirm-password">Verify Password*</label>
+      <input type="password" id="confirm-password" placeholder="Confirm Password" required />
+
+      <label for="username">Name*</label>
+      <input type="text" id="username" name="name" placeholder="Your name" required />
+
+      <label>Postal Code</label>
+      <div class="postal-group">
+        <input type="text" id="postcode" name="postalCode" placeholder="우편번호" readonly />
+        <button type="button" onclick="openDaumPostcode()">Search</button>
+      </div>
+
+      <label>Address</label>
+      <input type="text" id="address1" name="address1" placeholder="기본 주소" />
+      <input type="text" id="address2" name="address2" placeholder="상세 주소" style="margin-top: 10px;" />
+
+      <label>Phone*</label>
+      <div class="phone-group">
+        <input type="text" maxlength="3" name="phone" placeholder="*" />
+        <input type="text" maxlength="4" name="phone" placeholder="*" />
+        <input type="text" maxlength="4" name="phone" placeholder="*" />
+      </div>
+
+      <label for="email">Email*</label>
+      <input type="email" id="email" name="email" placeholder="Email address" required />
+
+      <p id="error-message" class="error"></p>
+      <button type="submit" class="save-btn">회원가입</button>
+    </form>
+
+    <div class="link">
+      이미 회원가입을 하셨나요? <a href="login.html">로그인</a>
+    </div>
+
+    <!-- 이하 동일 -->
+    <div id="postcodeLayer" style="display:none;position:fixed;z-index:9999;width:100%;height:100%;top:0;left:0;background:rgba(0,0,0,0.5);">
+      <div style="width:400px;height:500px;margin:100px auto;background:#fff;position:relative;z-index:10000;">
+        <img src="//t1.daumcdn.net/postcode/resource/images/close.png"
+          style="cursor:pointer;position:absolute;right:0;top:0;z-index:10001;width:30px" onclick="closeDaumPostcode()"
+          alt="Close">
+        <div id="daumPostcode" style="width:100%;height:100%;z-index:10000;"></div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("signup-form");
+      const password = document.getElementById("password");
+      const confirmPassword = document.getElementById("confirm-password");
+      const errorMessage = document.getElementById("error-message");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        errorMessage.textContent = "";
+
+        const user_id = document.getElementById("user_id").value.trim();
+        const name = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const postalCode = document.getElementById("postcode").value.trim();
+        const address = document.getElementById("address1").value.trim() + " " + document.getElementById("address2").value.trim();
+        const phoneInputs = document.querySelectorAll(".phone-group input");
+        const phone = Array.from(phoneInputs).map((input) => input.value.trim()).join("-");
+
+        if (password.value !== confirmPassword.value) {
+          errorMessage.textContent = "비밀번호가 일치하지 않습니다.";
+          return;
+        }
+
+        if (!user_id || !name || !email || !password.value || !postalCode || !address || !phone) {
+          errorMessage.textContent = "모든 항목을 입력해주세요.";
+          return;
+        }
+
+        if (!form.terms.checked || !form.privacy.checked) {
+          errorMessage.textContent = "필수 약관에 동의해주세요.";
+          return;
+        }
+
+        try {
+          const res = await fetch("/api/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id, name, email, password: password.value, postalCode, address, phone })
+          });
+
+          const data = await res.json();
+          if (!res.ok) {
+            errorMessage.textContent = data.message || "회원가입 실패";
+          } else {
+            alert("회원가입 성공!");
+            location.href = "login.html";
+          }
+        } catch (err) {
+          console.error(err);
+          errorMessage.textContent = "서버 오류가 발생했습니다.";
+        }
+      });
+    </script>
+
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+      function openDaumPostcode() {
+        const elementLayer = document.getElementById("postcodeLayer");
+        new daum.Postcode({
+          oncomplete: function (data) {
+            document.getElementById("postcode").value = data.zonecode;
+            document.getElementById("address1").value = data.roadAddress || data.jibunAddress;
+            document.getElementById("address2").focus();
+            elementLayer.style.display = "none";
+          },
+          width: "100%",
+          height: "100%"
+        }).embed(document.getElementById("daumPostcode"));
+        elementLayer.style.display = "block";
+      }
+
+      function closeDaumPostcode() {
+        document.getElementById("postcodeLayer").style.display = "none";
+      }
+    </script>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>마이페이지</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Noto Sans KR', sans-serif;
+            padding: 60px 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        header a {
+            display: inline-block;
+            text-decoration: none;
+            color: #fff;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            font-size: 24px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #555;
+            padding-bottom: 10px;
+        }
+
+        .info-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .info-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .info-group span {
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 15px;
+            background: #444;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn.danger {
+            background: #660000;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="index.html">
+            <img src="img/logo.png" alt="Miracle Group 로고">
+        </a>
+    </header>
+
+    <div class="container">
+        <h2>마이페이지</h2>
+        <div class="card">
+            <div class="info-group"><label>아이디</label><span id="user-id"></span></div>
+            <div class="info-group"><label>이름</label><span id="user-name"></span></div>
+            <div class="info-group"><label>이메일</label><span id="user-email"></span></div>
+            <div class="info-group"><label>우편번호</label><span id="user-postal"></span></div>
+            <div class="info-group"><label>주소</label><span id="user-address"></span></div>
+            <div class="info-group"><label>전화번호</label><span id="user-phone"></span></div>
+        </div>
+
+        <h3>개인 주문/결제 내역</h3>
+        <div class="card" id="order-history">
+            <p>최근 주문이 없습니다.</p>
+        </div>
+
+        <h3>반려동물 정보</h3>
+        <div class="card" id="pet-info">
+            <p>등록된 반려동물이 없습니다.</p>
+        </div>
+
+        <h3>서비스 현황</h3>
+        <div class="card" id="funeral-status">
+            <p>신청한 서비스가 없습니다.</p>
+        </div>
+
+        <h3>회원정보 수정</h3>
+        <button class="btn" onclick="location.href='edit-profile.html'">회원정보 수정하기</button>
+
+        <h3>계정 관리</h3>
+        <button class="btn" onclick="logout()">로그아웃</button>
+        <button class="btn danger" onclick="alert('준비 중입니다.')">회원탈퇴</button>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            alert("로그인이 필요합니다.");
+            location.href = "login.html";
+        }
+
+        document.getElementById("user-id").textContent = user.user_id;
+        document.getElementById("user-name").textContent = user.name;
+        document.getElementById("user-email").textContent = user.email;
+        document.getElementById("user-postal").textContent = user.postalCode;
+        document.getElementById("user-address").textContent = user.address;
+        document.getElementById("user-phone").textContent = user.phone;
+
+        const orderData = [
+            { name: "위패 세트", status: "배송완료" },
+            { name: "반려견 영양식", status: "배송중" }
+        ];
+
+        if (orderData.length > 0) {
+            document.getElementById("order-history").innerHTML = orderData.map(o => `
+        <div>📦 <strong>\${o.name}</strong> - <span style="color:#aaa">\${o.status}</span></div>
+      `).join('');
+        }
+
+        const petData = {
+            name: "코코",
+            breed: "푸들",
+            birth: "2019.05.12"
+        };
+
+        if (petData) {
+            document.getElementById("pet-info").innerHTML = `
+        <div>범려동물 이름: \${petData.name}</div>
+        <div>종류: \${petData.breed}</div>
+        <div>생일: \${petData.birth}</div>
+      `;
+        }
+
+        const funeralData = [
+            { type: "상조 B형", date: "2025-06-01", status: "접수완료" }
+        ];
+
+        if (funeralData.length > 0) {
+            document.getElementById("funeral-status").innerHTML = funeralData.map(f => `
+        <div>⚰️ <strong>\${f.type}</strong> - \${f.status} (<span style="color:#aaa">\${f.date}</span>)</div>
+      `).join('');
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("user");
+            alert("로그아웃 되었습니다.");
+            location.href = "index.html";
+        }
+    </script>
+</body>
+
+</html>

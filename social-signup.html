@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>추가 정보 입력</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 300px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px;
+      background: #fff;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>추가 정보 입력</h2>
+  <form id="social-signup-form">
+    <input type="text" id="nickname" placeholder="닉네임" required />
+    <input type="text" id="phone" placeholder="전화번호" required />
+    <button type="submit">가입 완료</button>
+  </form>
+
+  <script>
+    const pendingUser = JSON.parse(localStorage.getItem('pendingSocialUser'));
+
+    if (!pendingUser) {
+      alert("잘못된 접근입니다.");
+      window.location.href = "login.html";
+    }
+
+    document.getElementById('nickname').value = pendingUser.nickname || "";
+
+    document.getElementById('social-signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // 추가 입력된 정보
+      const nickname = document.getElementById('nickname').value;
+      const phone = document.getElementById('phone').value;
+
+      const fullUser = {
+        ...pendingUser,
+        nickname,
+        phone
+      };
+
+      // 👉 여기에 서버로 가입 요청 보내도 되고,
+      // 지금은 그냥 로그인 처리만
+      localStorage.setItem('user', JSON.stringify(fullUser));
+      localStorage.removeItem('pendingSocialUser');
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
