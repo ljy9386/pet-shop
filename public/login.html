@@ -12,6 +12,7 @@
       font-family: 'Noto Sans KR', sans-serif;
       color: #fff;
     }
+
     .container {
       display: flex;
       justify-content: space-between;
@@ -19,28 +20,34 @@
       padding: 60px 100px;
       gap: 80px;
     }
+
     .left {
       flex: 1;
     }
+
     .left h1 {
       font-size: 36px;
       font-family: 'Playfair Display', serif;
       margin-bottom: 10px;
     }
+
     .left p {
       margin-bottom: 30px;
       font-size: 16px;
       color: #ccc;
     }
+
     .right {
       flex: 1;
       max-width: 450px;
     }
+
     .right label {
       display: block;
       font-size: 16px;
       margin-bottom: 10px;
     }
+
     .right input[type="text"],
     .right input[type="password"] {
       width: 100%;
@@ -52,6 +59,7 @@
       background: #f5f5f5;
       color: #000;
     }
+
     .right button {
       width: 100%;
       padding: 18px;
@@ -62,6 +70,7 @@
       border-radius: 12px;
       cursor: pointer;
     }
+
     footer {
       text-align: center;
       margin-top: 100px;
@@ -69,6 +78,7 @@
       font-size: 14px;
       color: #aaa;
     }
+
     .logo-link {
       color: inherit;
       text-decoration: none;
@@ -76,26 +86,31 @@
       font-size: 36px;
       font-weight: bold;
     }
+
     .signup-link {
       margin-top: 20px;
       text-align: center;
       font-size: 14px;
       color: #aaa;
     }
+
     .signup-link a {
       color: #fff;
       font-weight: bold;
       text-decoration: underline;
     }
+
     @media screen and (max-width: 900px) {
       .container {
         flex-direction: column;
         padding: 40px 30px;
       }
+
       .left,
       .right {
         width: 100%;
       }
+
       .right {
         max-width: 100%;
       }
@@ -140,11 +155,12 @@
           </button>
 
           <!-- 네이버 -->
-          <a href="/auth/naver" style="background-color: #03C75A; color: #fff; border-radius: 8px; padding: 12px 20px;
+          <a href="/auth/naver" style="background-color: #03C75A; color: #fff; border-radius: 8px; padding: 12px 20px; 
             font-size: 14px; font-weight: bold; text-decoration: none; border: none;">
-            <img src="img/naver.png" alt="Naver" style="height:18px; vertical-align: middle; margin-right: 8px;">
+            <img src="/img/naver.png" alt="Naver" style="height:18px; vertical-align: middle; margin-right: 8px;">
             네이버로 간편 로그인
           </a>
+
 
           <!-- 구글 -->
           <a href="/auth/google" style="background-color: #ffffff; color: #000; border-radius: 8px; padding: 12px 20px;
@@ -228,6 +244,7 @@
       });
     });
   </script>
+
 </body>
 
 </html>
