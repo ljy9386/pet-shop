@@ -1,86 +1,216 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>추가 정보 입력</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
-      background-color: #111;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 40px 20px;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      width: 300px;
-    }
-
-    input {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      font-size: 14px;
-    }
-
-    button {
-      padding: 10px;
+    .container {
+      max-width: 500px;
+      margin: auto;
       background: #fff;
-      color: #111;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #015c4b;
+    }
+
+    .form-group {
       margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .phone-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .phone-group input {
+      flex: 1;
+    }
+
+    hr {
+      margin: 40px 0;
+      border: none;
+      border-top: 3px solid #888;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #015c4b;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: #013f34;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 15px;
     }
   </style>
 </head>
+
 <body>
-  <h2>추가 정보 입력</h2>
-  <form id="social-signup-form">
-    <input type="text" id="nickname" placeholder="닉네임" required />
-    <input type="text" id="phone" placeholder="전화번호" required />
-    <button type="submit">가입 완료</button>
-  </form>
+  <div class="container">
+    <h2>추가 정보 입력</h2>
+    <form id="social-signup-form">
+      <!-- 이름 -->
+      <div class="form-group">
+        <label for="username">이름</label>
+        <input type="text" id="username" placeholder="실명 입력" required>
+      </div>
+
+      <!-- 주소 -->
+      <div class="form-group">
+        <label for="postcode">우편번호</label>
+        <input type="text" id="postcode" placeholder="우편번호" required>
+      </div>
+      <div class="form-group">
+        <label for="address1">주소</label>
+        <input type="text" id="address1" placeholder="기본주소" required>
+      </div>
+      <div class="form-group">
+        <label for="address2">상세주소</label>
+        <input type="text" id="address2" placeholder="상세주소 입력">
+      </div>
+
+      <!-- 전화번호 -->
+      <div class="form-group">
+        <label>전화번호</label>
+        <div class="phone-group">
+          <input type="text" maxlength="3" placeholder="010">
+          <input type="text" maxlength="4" placeholder="0000">
+          <input type="text" maxlength="4" placeholder="0000">
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <hr>
+
+      <!-- 반려견 정보 -->
+      <div class="form-group">
+        <label for="pet-name">반려동물 이름</label>
+        <input type="text" id="pet-name" placeholder="반려동물 이름" required>
+      </div>
+      <div class="form-group">
+        <label for="pet-breed">반려동물 종/품종</label>
+        <input type="text" id="pet-breed" placeholder="예: 말티즈, 진돗개 등" required>
+      </div>
+      <div class="form-group">
+        <label for="pet-birth">반려동물 생년월일</label>
+        <input type="date" id="pet-birth">
+      </div>
+
+      <!-- 가입 버튼 -->
+      <button type="submit" class="submit-btn">가입 완료</button>
+      <div id="error-message" class="error"></div>
+    </form>
+  </div>
 
   <script>
-    const pendingUser = JSON.parse(localStorage.getItem('pendingSocialUser'));
+    const form = document.getElementById("social-signup-form");
+    const errorMessage = document.getElementById("error-message");
 
-    if (!pendingUser) {
-      alert("잘못된 접근입니다.");
-      window.location.href = "login.html";
-    }
-
-    document.getElementById('nickname').value = pendingUser.nickname || "";
-
-    document.getElementById('social-signup-form').addEventListener('submit', function(e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
+      errorMessage.textContent = "";
 
-      // 추가 입력된 정보
-      const nickname = document.getElementById('nickname').value;
-      const phone = document.getElementById('phone').value;
+      const name = document.getElementById("username").value.trim();
+      const postalCode = document.getElementById("postcode").value.trim();
+      const address =
+        document.getElementById("address1").value.trim() + " " +
+        document.getElementById("address2").value.trim();
+      const phoneInputs = document.querySelectorAll(".phone-group input");
+      const phone = Array.from(phoneInputs).map(input => input.value.trim()).join("-");
 
-      const fullUser = {
-        ...pendingUser,
-        nickname,
-        phone
+      const petName = document.getElementById("pet-name").value.trim();
+      const petBreed = document.getElementById("pet-breed").value.trim();
+      const petBirth = document.getElementById("pet-birth").value;
+
+      if (!name || !postalCode || !address.trim() || phone.includes("--") || !petName || !petBreed) {
+        errorMessage.textContent = "모든 필수 항목을 입력해주세요.";
+        return;
+      }
+
+      const userData = {
+        name,
+        postalCode,
+        address,
+        phone,
+        petName,
+        petBreed,
+        petBirth
       };
 
-      // 👉 여기에 서버로 가입 요청 보내도 되고,
-      // 지금은 그냥 로그인 처리만
-      localStorage.setItem('user', JSON.stringify(fullUser));
-      localStorage.removeItem('pendingSocialUser');
-      window.location.href = "index.html";
+      try {
+        const res = await fetch("/api/social-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData)
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          errorMessage.textContent = data.message || "회원가입 실패";
+        } else {
+          const userData = {
+            name,
+            postalCode,
+            address,
+            phone,
+            pet: {
+              name: petName,
+              breed: petBreed,
+              birth: petBirth
+            }
+          };
+          localStorage.setItem("user", JSON.stringify(userData));
+          alert("회원가입 완료!");
+          location.href = "index.html";
+        }
+      } catch (err) {
+        console.error(err);
+        errorMessage.textContent = "서버 오류가 발생했습니다.";
+      }
     });
   </script>
 </body>
+
 </html>

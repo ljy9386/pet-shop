@@ -16,6 +16,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//소셜 라우터 연결
+const socialRoutes = require('./routes/social');
+app.use("/", socialRoutes);
+
 // 세션
 app.use(
   session({

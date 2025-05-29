@@ -29,6 +29,7 @@
     "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-kakao": "^1.0.1"
+    "passport-kakao": "^1.0.1",
+    "passport-naver": "^1.0.6"
   }
 }

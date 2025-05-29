@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>C. 존중 서비스 결제</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f7f7f7;
+      color: #333;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #015c4b;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      font-size: 14px;
+      margin-bottom: 30px;
+      padding-left: 18px;
+    }
+
+    .kakao-pay-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .kakao-pay-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fee500;
+      color: #381e1f;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .kakao-pay-btn:hover {
+      background-color: #fdd800;
+    }
+
+    .kakao-pay-btn img {
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    .desc {
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>C. 존중 서비스 결제</h2>
+    <div class="price">월 35,000원 × 132개월<br>총 1,320,000원</div>
+    <ul>
+      <li>[A. 나눔] + [B. 배려] 전체 포함</li>
+      <li>추모공원 연계 혜택</li>
+      <li>전용 봉안당 공간 제공</li>
+    </ul>
+
+    <div class="kakao-pay-wrap">
+      <button class="kakao-pay-btn" onclick="payWithKakao()">
+        <img src="img/kakao.png" alt="KakaoPay" />
+        카카오페이로 결제하기
+      </button>
+      <div class="desc">※ 실제 결제는 아직 연동되지 않았으며 UI만 구현된 상태입니다.</div>
+    </div>
+  </div>
+
+  <script>
+    function payWithKakao() {
+      console.log("💳 C. 존중 서비스 결제 클릭됨");
+      alert("카카오페이 결제창이 연결됩니다. (테스트용)");
+    }
+  </script>
+</body>
+</html>
+    
