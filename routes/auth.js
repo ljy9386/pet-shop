@@ -133,5 +133,20 @@ router.get('/kakao/callback',
   }
 );
 
+// 네이버 로그인 시작
+router.get('/naver', passport.authenticate('naver'));
+
+// 네이버 콜백
+router.get('/naver/callback',
+  passport.authenticate('naver', {
+    failureRedirect: '/login.html',
+    session: true
+  }),
+  (req, res) => {
+    res.redirect('/');
+  }
+);
+
+
 
 module.exports = router;

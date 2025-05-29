@@ -98,10 +98,13 @@
         <div class="card">
             <div class="info-group"><label>아이디</label><span id="user-id"></span></div>
             <div class="info-group"><label>이름</label><span id="user-name"></span></div>
-            <div class="info-group"><label>이메일</label><span id="user-email"></span></div>
             <div class="info-group"><label>우편번호</label><span id="user-postal"></span></div>
             <div class="info-group"><label>주소</label><span id="user-address"></span></div>
             <div class="info-group"><label>전화번호</label><span id="user-phone"></span></div>
+            <div class="info-group"><label>반려동물 이름</label><span id="user-pet-name"></span></div>
+            <div class="info-group"><label>반려동물 종/품종</label><span id="user-pet-breed"></span></div>
+            <div class="info-group"><label>반려동물 생년월일</label><span id="user-pet-birth"></span></div>
+
         </div>
 
         <h3>개인 주문/결제 내역</h3>
@@ -124,7 +127,8 @@
 
         <h3>계정 관리</h3>
         <button class="btn" onclick="logout()">로그아웃</button>
-        <button class="btn danger" onclick="alert('준비 중입니다.')">회원탈퇴</button>
+        <button class="btn danger" onclick="deleteAccount()">회원탈퇴</button>
+
     </div>
 
     <script>
@@ -134,47 +138,17 @@
             location.href = "login.html";
         }
 
-        document.getElementById("user-id").textContent = user.user_id;
-        document.getElementById("user-name").textContent = user.name;
-        document.getElementById("user-email").textContent = user.email;
-        document.getElementById("user-postal").textContent = user.postalCode;
-        document.getElementById("user-address").textContent = user.address;
-        document.getElementById("user-phone").textContent = user.phone;
+        // 사용자 정보 반영
+        document.getElementById("user-id").textContent = user.user_id || "";
+        document.getElementById("user-name").textContent = user.name || "";
+        document.getElementById("user-postal").textContent = user.postalCode || "";
+        document.getElementById("user-address").textContent = user.address || "";
+        document.getElementById("user-phone").textContent = user.phone || "";
 
-        const orderData = [
-            { name: "위패 세트", status: "배송완료" },
-            { name: "반려견 영양식", status: "배송중" }
-        ];
-
-        if (orderData.length > 0) {
-            document.getElementById("order-history").innerHTML = orderData.map(o => `
-        <div>📦 <strong>\${o.name}</strong> - <span style="color:#aaa">\${o.status}</span></div>
-      `).join('');
-        }
-
-        const petData = {
-            name: "코코",
-            breed: "푸들",
-            birth: "2019.05.12"
-        };
-
-        if (petData) {
-            document.getElementById("pet-info").innerHTML = `
-        <div>범려동물 이름: \${petData.name}</div>
-        <div>종류: \${petData.breed}</div>
-        <div>생일: \${petData.birth}</div>
-      `;
-        }
-
-        const funeralData = [
-            { type: "상조 B형", date: "2025-06-01", status: "접수완료" }
-        ];
-
-        if (funeralData.length > 0) {
-            document.getElementById("funeral-status").innerHTML = funeralData.map(f => `
-        <div>⚰️ <strong>\${f.type}</strong> - \${f.status} (<span style="color:#aaa">\${f.date}</span>)</div>
-      `).join('');
-        }
+        // 반려동물 정보 반영
+        document.getElementById("user-pet-name").textContent = user.pet?.name || "";
+        document.getElementById("user-pet-breed").textContent = user.pet?.breed || "";
+        document.getElementById("user-pet-birth").textContent = user.pet?.birth || "";
 
         function logout() {
             localStorage.removeItem("user");
@@ -182,7 +156,20 @@
             alert("로그아웃 되었습니다.");
             location.href = "index.html";
         }
+
+        function deleteAccount() {
+            const confirmed = confirm("정말로 회원탈퇴 하시겠습니까? 모든 정보가 삭제됩니다.");
+            if (!confirmed) return;
+
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("user");
+
+            alert("회원탈퇴가 완료되었습니다.");
+            location.href = "index.html";
+        }
     </script>
+
+
 </body>
 
 </html>

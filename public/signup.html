@@ -117,44 +117,59 @@
     <h2>회원가입</h2>
 
     <form id="signup-form">
-      <label for="user_id">ID*</label>
+      <label for="user_id">아이디*</label>
       <input type="text" id="user_id" name="user_id" placeholder="ID" required />
 
-      <label for="password">Password*</label>
+      <label for="password">비밀번호*</label>
       <input type="password" id="password" name="password" placeholder="Password" required />
 
-      <label for="confirm-password">Verify Password*</label>
+      <label for="confirm-password">비밀번호 확인*</label>
       <input type="password" id="confirm-password" placeholder="Confirm Password" required />
 
-      <label for="username">Name*</label>
+      <label for="username">이름*</label>
       <input type="text" id="username" name="name" placeholder="Your name" required />
 
-      <label>Postal Code</label>
+      <label>우편주소</label>
       <div class="postal-group">
         <input type="text" id="postcode" name="postalCode" placeholder="우편번호" readonly />
         <button type="button" onclick="openDaumPostcode()">Search</button>
       </div>
 
-      <label>Address</label>
+      <label>주소</label>
       <input type="text" id="address1" name="address1" placeholder="기본 주소" />
       <input type="text" id="address2" name="address2" placeholder="상세 주소" style="margin-top: 10px;" />
 
-      <label>Phone*</label>
+      <label>전화번호*</label>
       <div class="phone-group">
         <input type="text" maxlength="3" name="phone" placeholder="*" />
         <input type="text" maxlength="4" name="phone" placeholder="*" />
         <input type="text" maxlength="4" name="phone" placeholder="*" />
       </div>
+      <!-- 구분선 -->
+      <hr style="margin: 40px 0; border: none; border-top: 5px solid #888;" />
 
-      <label for="email">Email address*</label>
-      <input type="email" id="email" name="email" placeholder="Email address" required />
+      <!-- 반려동물 정보 입력 -->
+      <div class="form-group">
+        <label for="pet-name">반려동물 이름</label>
+        <input type="text" id="pet-name" name="pet-name" placeholder="반려동물 이름" required />
+      </div>
+
+      <div class="form-group">
+        <label for="pet-breed">반려동물 종/품종</label>
+        <input type="text" id="pet-breed" name="pet-breed" placeholder="예: 말티즈, 진돗개 등" required />
+      </div>
+
+      <div class="form-group">
+        <label for="pet-birth">반려동물 생년월일</label>
+        <input type="date" id="pet-birth" name="pet-birth" />
+      </div>
 
       <p id="error-message" class="error"></p>
-      <button type="submit" class="save-btn">CREATE ACCOUNT</button>
+      <button type="submit" class="save-btn">가입하기</button>
     </form>
 
     <div class="link">
-      Already have an account? <a href="login.html">Log in</a>
+      이미 회원가입 하셨나요? <a href="login.html">로그인</a>
     </div>
 
     <div id="postcodeLayer"
