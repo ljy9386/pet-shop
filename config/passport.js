@@ -20,16 +20,16 @@ module.exports = (passport) => {
   passport.use(new NaverStrategy({
     clientID: process.env.NAVER_CLIENT_ID,
     clientSecret: process.env.NAVER_CLIENT_SECRET,
-    callbackURL:
-      process.env.NODE_ENV === "production"
-        ? "https://miraclepet.kr/auth/naver/callback"
-        : "http://localhost:3000/auth/naver/callback",
+    callbackURL: process.env.NODE_ENV === 'production'
+      ? 'https://miraclepet.kr/auth/naver/callback'
+      : 'http://localhost:3000/auth/naver/callback'
   }, (accessToken, refreshToken, profile, done) => {
+    console.log("✅ NAVER PROFILE:", profile);
     const userData = {
       user_id: `naver_${profile.id}`,
-      name: profile.displayName || '',
+      name: profile.displayName,
       email: profile.emails?.[0]?.value || '',
-      provider: 'naver',
+      provider: 'naver'
     };
     return done(null, userData);
   }));
@@ -43,3 +43,24 @@ module.exports = (passport) => {
     done(null, user);
   });
 };
+
+// ✅ 구글 로그인 전략
+
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.NODE_ENV === 'production'
+    ? 'https://miraclepet.kr/auth/google/callback'
+    : 'http://localhost:3000/auth/google/callback'
+}, (accessToken, refreshToken, profile, done) => {
+  const user = {
+    user_id: `google_${profile.id}`,
+    name: profile.displayName || '구글회원',
+    email: profile.emails?.[0]?.value || '',
+    provider: 'google'
+  };
+  return done(null, user);
+}));
+

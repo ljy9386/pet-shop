@@ -139,11 +139,101 @@ router.get('/naver', passport.authenticate('naver'));
 // 네이버 콜백
 router.get('/naver/callback',
   passport.authenticate('naver', {
-    failureRedirect: '/login.html',
+    failureRedirect: '/login',
     session: true
   }),
-  (req, res) => {
-    res.redirect('/');
+  async (req, res) => {
+    const user = req.user;
+    console.log("✅ NAVER USER:", user);
+
+    // ✅ 세션 저장
+    req.logIn(user, async (err) => {
+      if (err) {
+        console.error("❌ 세션 저장 실패:", err);
+        return res.redirect('/login');
+      }
+
+      // ✅ DB 확인
+      const existingUser = await User.findOne({ user_id: user.user_id });
+
+      if (!existingUser) {
+        // 신규 유저: 추가정보 입력용 세션 저장
+        req.session.tempUser = user;
+
+        // ✅ 팝업 안에서 메인창 이동 + 팝업 닫기
+        return res.send(`
+          <script>
+            if (window.opener) {
+              window.opener.location.href = "/social-signup.html";
+              window.close();
+            } else {
+              window.location.href = "/social-signup.html";
+            }
+          </script>
+        `);
+      }
+
+      // 기존 회원: 바로 메인으로 이동
+      return res.send(`
+        <script>
+          if (window.opener) {
+            window.opener.location.href = "/";
+            window.close();
+          } else {
+            window.location.href = "/";
+          }
+        </script>
+      `);
+    });
+  }
+);
+
+// 구글 로그인 시작
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// 구글 로그인 콜백
+router.get('/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/login',
+    session: true
+  }),
+  async (req, res) => {
+    const user = req.user;
+    console.log("✅ GOOGLE USER:", user);
+
+    req.logIn(user, async (err) => {
+      if (err) {
+        console.error("❌ 구글 세션 저장 실패:", err);
+        return res.redirect('/login');
+      }
+
+      const existingUser = await User.findOne({ user_id: user.user_id });
+
+      if (!existingUser) {
+        req.session.tempUser = user;
+        return res.send(`
+          <script>
+            if (window.opener) {
+              window.opener.location.href = "/social-signup.html";
+              window.close();
+            } else {
+              window.location.href = "/social-signup.html";
+            }
+          </script>
+        `);
+      }
+
+      return res.send(`
+        <script>
+          if (window.opener) {
+            window.opener.location.href = "/";
+            window.close();
+          } else {
+            window.location.href = "/";
+          }
+        </script>
+      `);
+    });
   }
 );
 

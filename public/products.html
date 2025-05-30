@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Miracle Pet Main</title>
+    <title>Miracle Pet Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
@@ -153,6 +154,96 @@
             font-size: 32px;
             font-family: 'Playfair Display', serif;
         }
+
+        @media screen and (max-width: 768px) {
+            .top-nav {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                padding: 10px 20px;
+                background-color: #1a1a1a;
+                gap: 10px;
+                /* 간격 줄이기 */
+            }
+
+            .top-nav a {
+                font-size: 10px;
+                /* 폰트 크기 줄이기 */
+                text-decoration: none;
+            }
+
+
+            .logo-area {
+                padding: 20px 0 10px;
+            }
+
+            .logo-area h1 {
+                font-size: 20px;
+            }
+
+            .logo-img {
+                width: 40px;
+                margin-bottom: 4px;
+            }
+
+            .section-header {
+                font-size: 18px;
+                padding: 40px 0 10px;
+            }
+
+            .product-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                padding-bottom: 40px;
+            }
+
+            .product-card {
+                height: auto;
+                padding: 12px;
+            }
+
+            .product-img {
+                height: 160px;
+            }
+
+            .product-name {
+                font-size: 13px;
+            }
+
+            .price-row {
+                font-size: 13px;
+                flex-wrap: wrap;
+            }
+
+            .sale,
+            .price,
+            .origin {
+                font-size: 13px;
+            }
+
+            .brand {
+                font-size: 12px;
+            }
+
+            .menu-nav {
+                display: flex;
+                justify-content: center;
+                gap: 40px;
+                /* 메뉴 항목 간 간격 */
+                margin-top: 24px;
+                padding: 0;
+            }
+
+            .menu-nav li {
+                list-style: none;
+                font-size: 16px;
+            }
+
+            .menu-nav a {
+                text-decoration: none;
+            }
+
+        }
     </style>
 </head>
 
@@ -160,8 +251,9 @@
     <header>
         <div class="container">
             <div class="top-nav">
-                <a href="login.html">로그인</a>
-                <a href="signup.html">회원가입</a>
+                <a href="login.html" id="login-link">로그인</a>
+                <a href="signup.html" id="signup-link">회원가입</a>
+                <a href="account-details.html" id="mypage-link" style="display: none;">마이페이지</a>
                 <a href="cart.html">장바구니</a>
             </div>
             <div class="logo-area">
@@ -290,6 +382,21 @@
             </div>
         </div>
     </main>
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (user) {
+            document.getElementById("login-link").style.display = "none";
+            document.getElementById("signup-link").style.display = "none";
+            document.getElementById("mypage-link").style.display = "inline";
+        } else {
+            document.getElementById("login-link").style.display = "inline";
+            document.getElementById("signup-link").style.display = "inline";
+            document.getElementById("mypage-link").style.display = "none";
+        }
+    </script>
+
+
 </body>
 
 </html>

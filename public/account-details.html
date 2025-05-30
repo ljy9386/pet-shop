@@ -107,19 +107,14 @@
 
         </div>
 
-        <h3>개인 주문/결제 내역</h3>
-        <div class="card" id="order-history">
-            <p>최근 주문이 없습니다.</p>
-        </div>
-
-        <h3>반려동물 정보</h3>
-        <div class="card" id="pet-info">
-            <p>등록된 반려동물이 없습니다.</p>
-        </div>
-
         <h3>서비스 현황</h3>
         <div class="card" id="funeral-status">
             <p>신청한 서비스가 없습니다.</p>
+        </div>
+
+        <h3>주문내역</h3>
+        <div class="card" id="order-history">
+            <p>주문 내역이 없습니다.</p>
         </div>
 
         <h3>회원정보 수정</h3>
@@ -170,6 +165,38 @@
     </script>
 
 
+    <script>
+        const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+        const orderContainer = document.getElementById("order-history");
+        if (orders.length > 0) {
+            orderContainer.innerHTML = orders.map(order => `
+            <div style="margin-bottom: 12px;">
+                <strong>주문번호:</strong> ${order.id}<br>
+                <strong>상품:</strong> ${order.item}<br>
+                <strong>금액:</strong> ${order.amount}원<br>
+                <strong>주문일:</strong> ${order.date}
+            </div>
+        `).join('');
+        }
+    </script>
+
+    <script>
+        const funeralData = JSON.parse(localStorage.getItem("funeralService"));
+
+        if (funeralData) {
+            document.getElementById("funeral-status").innerHTML = `
+    <p><strong>가입 서비스:</strong> ${funeralData.type}</p>
+    <p><strong>월 납입액:</strong> ${funeralData.monthly}</p>
+    <p><strong>납입 기간:</strong> ${funeralData.duration}</p>
+    <p><strong>총액:</strong> ${funeralData.total}</p>
+    <p><strong>시작일:</strong> ${funeralData.startedAt}</p>
+  `;
+        } else {
+            document.getElementById("funeral-status").innerHTML = `<p>신청한 서비스가 없습니다.</p>`;
+        }
+
+    </script>
 </body>
 
 </html>

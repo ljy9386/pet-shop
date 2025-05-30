@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <title>A. 나눔 서비스 결제</title>
@@ -19,7 +20,7 @@
       background: #fff;
       padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
@@ -70,6 +71,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h2>A. 나눔 서비스 결제</h2>
@@ -86,8 +88,6 @@
       <img src="img/kakao.png" alt="KakaoPay" />
       카카오페이로 결제하기
     </button>
-
-    <div class="desc">※ 실제 결제는 아직 연동되지 않았으며 UI만 구현된 상태입니다.</div>
   </div>
 
   <script>
@@ -97,5 +97,15 @@
       // 여기에 카카오페이 API 연동 로직 추가 예정
     }
   </script>
+  <script>
+    localStorage.setItem("funeralService", JSON.stringify({
+      type: "A. 나눔 서비스",
+      monthly: "15,000원",
+      duration: "132개월",
+      total: "1,980,000원",
+      startedAt: new Date().toISOString().split("T")[0]
+    }));
+  </script>
 </body>
+
 </html>

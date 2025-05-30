@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>반려동물 장례 서비스</title>
+    <title>상조 서비스</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
@@ -230,13 +231,79 @@
         .service-button:hover {
             background-color: #013f34;
         }
+
+        .top-logo {
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .top-logo img {
+            height: 40px;
+            /* ⬅ 아주 작게 */
+            object-fit: contain;
+        }
+
+        /* ✅ 모바일 전용: 강아지 이미지(hero)를 맨 위로 */
+        @media (max-width: 768px) {
+            .hero {
+                order: -1;
+                height: 60vh;
+                margin-bottom: 40px;
+            }
+
+            .hero h2 {
+                font-size: 20px;
+                margin-top: 200px;
+                padding: 0 20px;
+            }
+
+            .section {
+                padding: 40px 16px;
+            }
+
+            .hero img {
+                width: 100%;
+                object-fit: cover;
+            }
+
+            .hero+.section {
+                margin-top: 0;
+            }
+
+            .service-card {
+                width: 90% !important;
+            }
+
+            .section>div {
+                flex-direction: column !important;
+                align-items: center;
+            }
+
+            .menu-slide {
+                display: flex !important;
+                flex-direction: column;
+                align-items: flex-start;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                padding: 20px;
+                z-index: 9999;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <header>
-        <img src="img/logo.png" alt="Miracle Group 로고" style="height: 60px; margin-bottom: 10px;">
+        <div class="top-logo">
+            <a href="index.html">
+                <img src="img/logo.png" alt="로고">
+            </a>
+        </div>
     </header>
     <input type="checkbox" id="menu-toggle" />
     <label for="menu-toggle" class="hamburger">
@@ -272,13 +339,16 @@
         <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 60px; color: #1a1a1a;">서비스 소개
         </h2>
 
-        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 60px; flex-wrap: wrap;">
+        <div
+            style="display: flex; justify-content: center; gap: 40px; margin-top: 60px; flex-wrap: nowrap; flex-direction: row;">
+
             <!-- A. 나눔 서비스 -->
             <div
                 style="background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
                 <h3 style="color: #015c4b; font-weight: 600;">A. 나눔 서비스</h3>
                 <p style="margin: 16px 0;">필수 장례만 담은 실속형 상품<br><strong>월 15,000원 × 132개월</strong><br>총 1,980,000원</p>
-                <ul style="text-align: left; font-size: 14px; padding-left: 0; list-style: none;">
+                <ul style="text-align: center; font-size: 14px; padding-left: 0; list-style: none;">
+
                     <li>도자기 유골함, 보자기, 고급 면수의</li>
                     <li>헌화 및 꽃다발, 개별 화장</li>
                     <li>단독 추모실, 장례 증명서</li>
@@ -292,7 +362,8 @@
                 style="background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
                 <h3 style="color: #015c4b; font-weight: 600;">B. 배려 서비스</h3>
                 <p style="margin: 16px 0;">고급 장례 생각한 합리적 상품<br><strong>월 25,000원 × 132개월</strong><br>총 3,300,000원</p>
-                <ul style="text-align: left; font-size: 14px; padding-left: 0; list-style: none;">
+                <ul style="text-align: center; font-size: 14px; padding-left: 0; list-style: none;">
+
                     <li>[A. 나눔 서비스] 포함</li>
                     <li>동물병원, 노령견 요양원</li>
                     <li>돌봄 쉼터, 소개 앱 제공</li>
@@ -306,8 +377,10 @@
                 style="background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
                 <h3 style="color: #015c4b; font-weight: 600;">C. 존중 서비스</h3>
                 <p style="margin: 16px 0;">프리미엄 추모를 위한 고급형 상품<br><strong>월 35,000원 × 132개월</strong><br>총 4,620,000원</p>
-                <ul style="text-align: left; font-size: 14px; padding-left: 0; list-style: none;">
-                    <li>[A. 나눔] + [B. 배려] 전체 포함</li>
+                <ul style="text-align: center; font-size: 14px; padding-left: 0; list-style: none;">
+
+                    <li>[A. 나눔 서비스] 포함</li>
+                    <li>[B. 배려 서비스] 포함</li>
                     <li>추모공원 연계 혜택</li>
                     <li>전용 봉안당 공간 제공</li>
                 </ul>
