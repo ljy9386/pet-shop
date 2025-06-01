@@ -21,7 +21,7 @@
     const totalAmount = localStorage.getItem("total_amount");
 
     if (!pg_token || !tid) {
-      alert("결제 인증 정보가 부족합니다.");
+      alert("잠시만기다려주세요");
     } else {
       fetch("/pay/approve", {
         method: "POST",
