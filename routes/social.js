@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/User"); // 사용자 모델
 
 // 소셜 가입 처리
-router.post("/api/social-signup", async (req, res) => {
+router.post("/social-signup", async (req, res) => {
   try {
     console.log("🔥 받은 데이터:", req.body);
     const {

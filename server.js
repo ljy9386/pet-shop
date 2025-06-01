@@ -47,7 +47,7 @@ mongoose
   .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // 라우터 연결
-app.use('/', socialRoutes);
+app.use('/api', socialRoutes);
 app.use('/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/kakao', kakaoPayRouter);
