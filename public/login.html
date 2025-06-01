@@ -222,10 +222,10 @@
       const password = document.getElementById("password").value.trim();
 
       try {
-        const res = await fetch("/auth/login", {
+        const res = await fetch("https://miraclepet-backend.onrender.com/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id, password })
+          body: JSON.stringify({ user_id, password }),
         });
 
         const data = await res.json();
