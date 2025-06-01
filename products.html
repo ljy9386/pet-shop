@@ -253,7 +253,7 @@
             <div class="top-nav">
                 <a href="login.html" id="login-link">로그인</a>
                 <a href="signup.html" id="signup-link">회원가입</a>
-                <a href="account-details.html" id="mypage-link" style="display: none;">마이페이지</a>
+                <a href="account-details.html" id="account-details-link" style="display: none;">마이페이지</a>
                 <a href="cart.html">장바구니</a>
             </div>
             <div class="logo-area">
@@ -389,18 +389,18 @@
             document.getElementById("login-link").style.display = "none";
             document.getElementById("signup-link").style.display = "none";
 
-            const mypageLink = document.getElementById("mypage-link");
+            const mypageLink = document.getElementById("account-details-link");
             mypageLink.style.display = "inline";
 
             // ✅ 관리자면 관리자페이지로, 아니면 account-detail.html로 연결
             if (user.admin) {
                 mypageLink.setAttribute("href", "admin.html");
             } else {
-                mypageLink.setAttribute("href", "account-detail.html");
+                mypageLink.setAttribute("href", "account-details.html");
             }
-
+            mypageLink.textContent = user.admin ? "관리자페이지" : "마이페이지";
         } else {
-            document.getElementById("mypage-link").style.display = "none";
+            document.getElementById("account-details-link").style.display = "none";
         }
     </script>
 
