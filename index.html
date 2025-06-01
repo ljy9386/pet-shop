@@ -312,31 +312,38 @@
   </footer>
 
 
-  <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    const loginLink = document.getElementById("login-link");
-    const signupLink = document.getElementById("signup-link");
-    const mypageLink = document.getElementById("mypage-link");
+ <script>
+  const loginLink = document.getElementById("login-link");
+  const signupLink = document.getElementById("signup-link");
+  const mypageLink = document.getElementById("mypage-link");
 
-    if (user) {
-      loginLink.style.display = "none";
-      signupLink.style.display = "none";
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch (e) {
+    user = null;
+  }
 
-      if (user.admin) {
-        mypageLink.textContent = "관리자페이지";
-        mypageLink.href = "admin.html";
-      } else {
-        mypageLink.textContent = "마이페이지";
-        mypageLink.href = "account-details.html";
-      }
+  if (user) {
+    loginLink.style.display = "none";
+    signupLink.style.display = "none";
 
-      mypageLink.style.display = "inline-block";
+    if (user.admin) {
+      mypageLink.textContent = "관리자페이지";
+      mypageLink.href = "admin.html";
     } else {
-      loginLink.style.display = "inline-block";
-      signupLink.style.display = "inline-block";
-      mypageLink.style.display = "none";
+      mypageLink.textContent = "마이페이지";
+      mypageLink.href = "account-details.html";
     }
-  </script>
+
+    mypageLink.style.display = "inline-block";
+  } else {
+    loginLink.style.display = "inline-block";
+    signupLink.style.display = "inline-block";
+    mypageLink.style.display = "none";
+  }
+</script>
+
 </body>
 
 </html>
