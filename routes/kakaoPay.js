@@ -3,7 +3,7 @@ const axios = require("axios");
 const router = express.Router();
 const Payment = require("../models/Payment");
 
-router.post("/api/kakao/pay", async (req, res) => {
+router.post("/pay", async (req, res) => {
   const { item_name, total_amount } = req.body;
 
   try {
