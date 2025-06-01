@@ -18,9 +18,9 @@ router.post("/pay", async (req, res) => {
         total_amount,
         vat_amount: 0,
         tax_free_amount: 0,
-        approval_url: "https://miraclepet.kr/pay/success",
+        approval_url: "https://miraclepet.kr/payment-success.html",
         cancel_url: "https://miraclepet.kr/pay/cancel",
-        fail_url: "https://miraclepet.kr/pay/fail"
+        fail_url: "https://miraclepet.kr/pay/fail",
       }),
       {
         headers: {
