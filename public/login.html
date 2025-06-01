@@ -253,11 +253,27 @@
             success: function (res) {
               const userData = {
                 id: res.id,
-                email: res.kakao_account.email,
-                nickname: res.kakao_account.profile.nickname
+                email: res.kakao_account?.email || "",
+                nickname: res.kakao_account?.profile?.nickname || ""
               };
-              localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
-              window.location.href = "social-signup.html";
+
+              const userId = `kakao_${res.id}`;
+              fetch(`https://miraclepet-backend.onrender.com/api/user/check/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                  localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
+                  if (data.exists) {
+                    // 이미 가입된 사용자 → 바로 메인페이지
+                    window.location.href = "index.html";
+                  } else {
+                    // 신규 사용자 → 추가 정보 입력
+                    window.location.href = "social-signup.html";
+                  }
+                })
+                .catch(error => {
+                  alert("유저 확인 중 오류");
+                  console.error(error);
+                });
             },
             fail: function (error) {
               alert("유저 정보 가져오기 실패");

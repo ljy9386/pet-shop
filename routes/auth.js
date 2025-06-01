@@ -182,15 +182,19 @@ router.get('/naver/callback',
 
       // 기존 회원: 바로 메인으로 이동
       return res.send(`
-        <script>
-          if (window.opener) {
-            window.opener.location.href = "/";
-            window.close();
-          } else {
-            window.location.href = "/";
-          }
-        </script>
-      `);
+  <script>
+    const user = ${JSON.stringify(user)};
+    localStorage.setItem("user", JSON.stringify(user));
+
+    if (window.opener) {
+      window.opener.location.href = "/index.html";
+      window.close();
+    } else {
+      window.location.href = "/index.html";
+    }
+  </script>
+`);
+
     });
   }
 );
@@ -230,16 +234,21 @@ router.get('/google/callback',
         `);
       }
 
-      return res.send(`
-        <script>
-          if (window.opener) {
-            window.opener.location.href = "/";
-            window.close();
-          } else {
-            window.location.href = "/";
-          }
-        </script>
-      `);
+ return res.send(`
+  <script>
+    const user = ${JSON.stringify(user)};
+    localStorage.setItem("user", JSON.stringify(user));
+
+    if (window.opener) {
+      window.opener.localStorage.setItem("user", JSON.stringify(user));
+      window.opener.location.href = "/index.html";
+      window.close();
+    } else {
+      window.location.href = "/index.html";
+    }
+  </script>
+`);
+
     });
   }
 );
