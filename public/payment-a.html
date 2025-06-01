@@ -99,7 +99,7 @@
   const user_id = localStorage.getItem("user_id");
   const user_name = localStorage.getItem("user_name");
 
-  fetch("/api/kakao/pay", {
+  fetch("https://miraclepet-backend.onrender.com/api/kakao/pay", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
