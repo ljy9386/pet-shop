@@ -3,7 +3,7 @@ const axios = require("axios");
 const router = express.Router();
 const Payment = require("../models/Payment");
 
-router.post("/pay", async (req, res) => {
+router.post("/api/kakao/pay", async (req, res) => {
   const { item_name, total_amount } = req.body;
 
   try {
@@ -40,23 +40,46 @@ router.post("/pay", async (req, res) => {
 
 router.post("/approve", async (req, res) => {
   try {
-    const { userId, name, serviceType, totalAmount } = req.body;
+    const { pg_token, tid, userId, name, serviceType, totalAmount } = req.body;
 
+    // 1. 카카오페이 승인 요청
+    const kakaoRes = await axios.post(
+      "https://kapi.kakao.com/v1/payment/approve",
+      new URLSearchParams({
+        cid: "TC0ONETIME",
+        tid,
+        partner_order_id: "miracle_order_001",
+        partner_user_id: "miracle_user_001",
+        pg_token,
+      }),
+      {
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
+          "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      }
+    );
+
+    // 2. DB에 결제 내역 저장
     const newPayment = new Payment({
       userId,
       name,
       serviceType,
       totalAmount,
       approved: true,
-      paidAt: new Date()
+      paidAt: new Date(),
     });
 
     await newPayment.save();
-    res.json({ success: true });
+
+    // 3. 응답
+    res.json({ success: true, data: kakaoRes.data });
+
   } catch (err) {
-    console.error("❌ 결제 정보 저장 오류:", err);
-    res.status(500).json({ success: false, message: "DB 저장 실패" });
+    console.error("❌ 승인 또는 저장 실패:", err.response?.data || err.message);
+    res.status(500).json({ success: false, message: "결제 승인/저장 실패" });
   }
 });
+
 
 module.exports = router;
