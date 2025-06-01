@@ -97,29 +97,42 @@
 
   <script>
     function payWithKakao() {
-      fetch("/api/kakao/pay", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          item_name: "C. 존중 서비스",
-          total_amount: 4620000
-        })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.next_redirect_pc_url) {
-            window.location.href = data.next_redirect_pc_url;
-          } else {
-            alert("결제 URL을 가져오지 못했습니다.");
-          }
-        })
-        .catch(err => {
-          console.error("결제 오류:", err);
-          alert("결제 요청 중 오류 발생");
-        });
-    }
+  const item_name = "A. 나눔 서비스";
+  const total_amount = 1980000;
+
+  // 로그인 정보 예시 - 실제 로그인 연동된 상태면 해당 값으로 대체
+  const user_id = localStorage.getItem("user_id");
+  const user_name = localStorage.getItem("user_name");
+
+  fetch("https://miraclepet-backend.onrender.com/api/kakao/pay", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ item_name, total_amount })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.next_redirect_pc_url) {
+        // ✅ localStorage에 정보 저장
+        localStorage.setItem("kakao_tid", data.tid);
+        localStorage.setItem("total_amount", total_amount);
+        localStorage.setItem("service_type", item_name);
+        localStorage.setItem("user_id", user_id);
+        localStorage.setItem("user_name", user_name);
+
+        // ✅ 결제창 이동
+        window.location.href = data.next_redirect_pc_url;
+      } else {
+        alert("결제 URL을 가져오지 못했습니다.");
+      }
+    })
+    .catch(err => {
+      console.error("결제 오류:", err);
+      alert("결제 요청 중 오류 발생");
+    });
+}
+
   </script>
 
 
