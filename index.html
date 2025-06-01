@@ -41,7 +41,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 16px;
-      background: rgba(0, 0, 0, 0.4);
       z-index: 999;
     }
 
@@ -85,8 +84,8 @@
 
     .menu-slide {
       position: fixed;
-      top: 60px;
-      left: 100px;
+      top: 25px;
+      left: 70px;
       display: flex;
       gap: 25px;
       transition: transform 0.4s ease-in-out;
@@ -163,7 +162,6 @@
       font-size: 12px;
       color: #ccc;
       line-height: 1.8;
-      background: rgba(0, 0, 0, 0.3);
       padding-bottom: 5px;
     }
 
@@ -306,10 +304,10 @@
 
   <footer class="site-footer">
     <div class="footer-compact">
-      <a href="privacy.html">개인정보처리방침</a> · <a href="youth-policy.html">청소년보호정책</a> · <a href="notice.html">고객센터</a> 
+      <a href="privacy.html">개인정보처리방침</a> · <a href="youth-policy.html">청소년보호정책</a> · <a href="notice.html">고객센터</a>
     </div>
     <div class="footer-compact">
-     미라클그룹반려상조 주소: 서울특별시 강남구 선릉로 533 / 대표전화: 02-566-1121
+      미라클그룹반려상조 주소: 서울특별시 강남구 선릉로 533 / 대표전화: 02-566-1121
     </div>
   </footer>
 
@@ -323,6 +321,15 @@
     if (user) {
       loginLink.style.display = "none";
       signupLink.style.display = "none";
+
+      if (user.admin) {
+        mypageLink.textContent = "관리자페이지";
+        mypageLink.href = "admin.html";
+      } else {
+        mypageLink.textContent = "마이페이지";
+        mypageLink.href = "account-details.html";
+      }
+
       mypageLink.style.display = "inline-block";
     } else {
       loginLink.style.display = "inline-block";

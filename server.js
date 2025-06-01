@@ -4,21 +4,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
+const cors = require('cors');
 const path = require('path');
-require('./config/passport')(passport); // ✅ 함수 호출 형태로 설정 연결
+
+require('./config/passport')(passport);
 
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
+const socialRoutes = require('./routes/social');
+const kakaoPayRouter = require('./routes/kakaoPay'); // ✅ 카카오페이 라우터 추가
+const adminRoutes = require('./routes/admin');       // ✅ 관리자 라우터 추가
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// 파서
+// 미들웨어
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-//소셜 라우터 연결
-const socialRoutes = require('./routes/social');
-app.use("/", socialRoutes);
 
 // 세션
 app.use(
@@ -43,15 +46,22 @@ mongoose
   .then(() => console.log('✅ MongoDB connected (DB: miracledb)'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// 라우터
+// 라우터 연결
+app.use('/', socialRoutes);
 app.use('/auth', authRouter);
 app.use('/api/user', userRouter);
+app.use('/api/kakao', kakaoPayRouter);
+app.use('/api/admin', adminRoutes); // ✅ 관리자 API 연결
 
-// 정적 파일
+// 정적 파일 서빙
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 기본 라우터
+app.get('/', (req, res) => {
+  res.send('✅ 서버 정상 작동 중');
+});
+
 // 서버 실행
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🌐 Server running at http://localhost:${PORT}`);
 });

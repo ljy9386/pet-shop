@@ -92,9 +92,28 @@
 
   <script>
     function payWithKakao() {
-      console.log("🟡 카카오페이 결제 버튼 클릭됨");
-      alert("카카오페이 결제창이 연결됩니다. (테스트용)");
-      // 여기에 카카오페이 API 연동 로직 추가 예정
+      fetch("/api/kakao/pay", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          item_name: "A. 나눔 서비스",
+          total_amount: 1980000
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.next_redirect_pc_url) {
+            window.location.href = data.next_redirect_pc_url;
+          } else {
+            alert("결제 URL을 가져오지 못했습니다.");
+          }
+        })
+        .catch(err => {
+          console.error("결제 오류:", err);
+          alert("결제 요청 중 오류 발생");
+        });
     }
   </script>
   <script>
