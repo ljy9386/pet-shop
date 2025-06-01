@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>결제 완료</title>
+</head>
+<body>
+  <h2>결제가 완료되었습니다 🎉</h2>
+  <p>잠시만 기다려 주세요...</p>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const pg_token = urlParams.get("pg_token");
+    const tid = localStorage.getItem("kakao_tid");
+
+    const userId = localStorage.getItem("user_id");
+    const name = localStorage.getItem("user_name");
+    const serviceType = localStorage.getItem("service_type");
+    const totalAmount = localStorage.getItem("total_amount");
+
+    if (!pg_token || !tid) {
+      alert("결제 인증 정보가 부족합니다.");
+    } else {
+      fetch("/pay/approve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pg_token,
+          tid,
+          userId,
+          name,
+          serviceType,
+          totalAmount,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            alert("결제가 성공적으로 승인되었습니다.");
+            console.log(data.data);
+          } else {
+            alert("결제 승인에 실패했습니다.");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("서버 통신 오류 발생");
+        });
+    }
+  </script>
+</body>
+</html>
