@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   address: { type: String, required: true },
   phone: { type: String, required: true },
   postalCode: { type: String, required: true },
+  admin: { type: Boolean, default: false },
   tempPassword: String,
 
   // ✅ 반려동물 정보 추가

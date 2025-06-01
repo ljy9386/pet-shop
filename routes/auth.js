@@ -1,6 +1,6 @@
 // routes/auth.js
 const express = require('express');
-const bcrypt = require('bcrypt'); // 비밀번호 해시용
+const bcrypt = require('bcryptjs'); // 비밀번호 해시용
 const router = express.Router();
 const User = require('../models/User'); // ✅ 사용자 모델 연결 (경로는 실제 파일에 맞게 수정)
 const passport = require('passport'); // ← 이거 추가해야 정상 작동
@@ -59,13 +59,19 @@ router.post('/login', async (req, res) => {
   const { user_id, password } = req.body;
   console.log('📥 로그인 시도:', user_id);
 
+  let user;
+
   try {
-    const user = await User.findOne({ user_id });
+    user = await User.findOne({ user_id });
+    console.log("💡 찾은 유저:", user);
     if (!user) {
       return res.status(400).json({ message: '존재하지 않는 아이디입니다.' });
     }
-
+    console.log("👉 입력 비번:", password);
+    console.log("👉 입력 비번 타입:", typeof password);
+    console.log("👉 DB 비번:", user.password);
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("🧪 bcrypt 결과:", isMatch);
     if (!isMatch) {
       return res.status(400).json({ message: '비밀번호가 일치하지 않습니다.' });
     }
@@ -86,7 +92,8 @@ router.post('/login', async (req, res) => {
         email: user.email,
         postalCode: user.postalCode,
         address: user.address,
-        phone: user.phone
+        phone: user.phone,
+        admin: user.admin
       }
     });
   } catch (err) {

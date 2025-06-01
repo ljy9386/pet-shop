@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>관리자 페이지 - 결제 내역</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f4f4;
+            padding: 40px;
+            color: #333;
+        }
+
+        h1 {
+            color: #015c4b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #015c4b;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .approved {
+            color: green;
+            font-weight: bold;
+        }
+
+        .not-approved {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>미라클 관리자 결제 내역</h1>
+    <div style="margin: 20px 0 10px; text-align: right;">
+        <input type="text" id="payment-search" placeholder="이름 또는 서비스명 검색"
+            style="padding: 8px; font-size: 14px; width: 220px;" />
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>이름</th>
+                <th>서비스</th>
+                <th>금액</th>
+                <th>승인</th>
+                <th>결제일</th>
+            </tr>
+        </thead>
+        <tbody id="payment-table-body">
+            <tr>
+                <td colspan="5">불러오는 중...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 60px; color: #015c4b;">회원 목록</h2>
+    <div style="margin: 40px 0 10px; text-align: right;">
+        <input type="text" id="user-search" placeholder="이름으로 검색"
+            style="padding: 8px; font-size: 14px; width: 200px;" />
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>아이디</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>전화번호</th>
+                <th>관리자여부</th>
+                <th>가입일</th>
+            </tr>
+        </thead>
+        <tbody id="user-table-body">
+            <tr>
+                <td colspan="6">불러오는 중...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        fetch("/api/admin/payments")
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById("payment-table-body");
+                const searchInput = document.getElementById("payment-search");
+
+                function renderPayments(filter = "") {
+                    const filtered = data.filter(payment =>
+                        (payment.name || "").toLowerCase().includes(filter.toLowerCase()) ||
+                        (payment.serviceType || "").toLowerCase().includes(filter.toLowerCase())
+                    );
+
+                    tbody.innerHTML = "";
+
+                    if (filtered.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='5'>검색 결과가 없습니다.</td></tr>";
+                        return;
+                    }
+
+                    filtered.forEach(payment => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+            <td>${payment.name || '-'}</td>
+            <td>${payment.serviceType}</td>
+            <td>${payment.totalAmount.toLocaleString()}원</td>
+            <td class="${payment.approved ? 'approved' : 'not-approved'}">
+              ${payment.approved ? "성공" : "실패"}
+            </td>
+            <td>${new Date(payment.paidAt).toLocaleDateString()}</td>
+          `;
+                        tbody.appendChild(row);
+                    });
+                }
+
+                // 최초 출력
+                renderPayments();
+
+                // 검색어 입력 시 필터
+                searchInput.addEventListener("input", e => {
+                    renderPayments(e.target.value);
+                });
+            })
+            .catch(err => {
+                console.error("❌ 결제 내역 fetch 실패:", err);
+                document.getElementById("payment-table-body").innerHTML = `
+        <tr><td colspan="5">데이터 불러오기 실패</td></tr>
+      `;
+            });
+    </script>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.admin) {
+            alert("관리자만 접근할 수 있습니다.");
+            location.href = "/";
+        }
+    </script>
+    <script>
+        fetch("/api/admin/users")
+            .then(res => res.json())
+            .then(users => {
+                const userBody = document.getElementById("user-table-body");
+                const searchInput = document.getElementById("user-search");
+
+                function renderUserTable(filter = "") {
+                    const filtered = users.filter(u =>
+                        u.name.toLowerCase().includes(filter.toLowerCase())
+                    );
+
+                    userBody.innerHTML = "";
+
+                    if (filtered.length === 0) {
+                        userBody.innerHTML = "<tr><td colspan='6'>검색 결과가 없습니다.</td></tr>";
+                        return;
+                    }
+
+                    filtered.forEach(u => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+          <td>${u.user_id}</td>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td>${u.phone}</td>
+          <td>${u.admin ? "관리자" : "일반회원"}</td>
+          <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+        `;
+                        userBody.appendChild(row);
+                    });
+                }
+
+                // 초기 출력
+                renderUserTable();
+
+                // 검색 필터링
+                searchInput.addEventListener("input", e => {
+                    renderUserTable(e.target.value);
+                });
+            })
+            .catch(err => {
+                console.error("❌ 회원목록 fetch 오류:", err);
+                document.getElementById("user-table-body").innerHTML = "<tr><td colspan='6'>불러오기 실패</td></tr>";
+            });
+    </script>
+
+    <div style="text-align: center; margin-top: 60px;">
+        <button onclick="logout()"
+            style="padding: 10px 20px; font-size: 16px; background-color: #015c4b; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            로그아웃
+        </button>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem("user");
+            alert("로그아웃 되었습니다.");
+            location.href = "/";
+        }
+    </script>
+
+
+</body>
+
+</html>
