@@ -42,6 +42,8 @@ router.post("/approve", async (req, res) => {
   try {
     const { pg_token, tid, userId, name, serviceType, totalAmount } = req.body;
 
+    console.log("💬 승인 요청 데이터:", { pg_token, tid, userId, name, serviceType, totalAmount });
+
     // 1. 카카오페이 승인 요청
     const kakaoRes = await axios.post(
       "https://kapi.kakao.com/v1/payment/approve",
