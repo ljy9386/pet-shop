@@ -169,14 +169,19 @@
         return;
       }
 
+      const baseUser = JSON.parse(localStorage.getItem("pendingSocialUser") || "{}");
+
       const userData = {
+        ...baseUser,
         name,
         postalCode,
         address,
         phone,
-        petName,
-        petBreed,
-        petBirth
+        pet: {
+          name: petName,
+          breed: petBreed,
+          birth: petBirth
+        }
       };
 
       try {
@@ -188,25 +193,17 @@
 
         const data = await res.json();
         if (!res.ok) {
+          const errorMessage = document.getElementById("error-message");
           errorMessage.textContent = data.message || "회원가입 실패";
-        } else {
-          const userData = {
-            name,
-            postalCode,
-            address,
-            phone,
-            pet: {
-              name: petName,
-              breed: petBreed,
-              birth: petBirth
-            }
-          };
-          localStorage.setItem("user", JSON.stringify(userData));
-          alert("회원가입 완료!");
-          location.href = "index.html";
+          return;
         }
+        // ✅ 로그인 유지
+        localStorage.setItem("user", JSON.stringify(userData));
+        alert("회원가입 완료!");
+        location.href = "index.html";
       } catch (err) {
         console.error(err);
+        const errorMessage = document.getElementById("error-message");
         errorMessage.textContent = "서버 오류가 발생했습니다.";
       }
     });

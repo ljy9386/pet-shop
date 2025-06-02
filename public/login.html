@@ -222,7 +222,7 @@
       const password = document.getElementById("password").value.trim();
 
       try {
-        const res = await fetch("https://miraclepet-backend.onrender.com/auth/login", {
+        const res = await fetch("https://miraclepet.kr/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id, password }),
@@ -251,14 +251,20 @@
           Kakao.API.request({
             url: "/v2/user/me",
             success: function (res) {
+              const userId = `kakao_${res.id}`;
               const userData = {
-                id: res.id,
+                user_id: userId,
                 email: res.kakao_account?.email || "",
                 nickname: res.kakao_account?.profile?.nickname || ""
               };
-
-              const userId = `kakao_${res.id}`;
-              fetch(`https://miraclepet-backend.onrender.com/api/user/check/${userId}`)
+              fetch("https://miraclepet.kr/api/social-signup", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(userData)
+              });
+              fetch(`https://miraclepet.kr/api/user/check/${userId}`)
                 .then(response => response.json())
                 .then(data => {
                   localStorage.setItem("pendingSocialUser", JSON.stringify(userData));

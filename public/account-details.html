@@ -182,20 +182,28 @@
     </script>
 
     <script>
-        const funeralData = JSON.parse(localStorage.getItem("funeralService"));
+        // 이미 위에 user 선언됨 → 그대로 재사용
+        fetch(`https://miraclepet-backend.onrender.com/api/payment/user/${user.user_id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.length) {
+                    document.getElementById("funeral-status").innerHTML = "<p>신청한 서비스가 없습니다.</p>";
+                    return;
+                }
 
-        if (funeralData) {
-            document.getElementById("funeral-status").innerHTML = `
-    <p><strong>가입 서비스:</strong> ${funeralData.type}</p>
-    <p><strong>월 납입액:</strong> ${funeralData.monthly}</p>
-    <p><strong>납입 기간:</strong> ${funeralData.duration}</p>
-    <p><strong>총액:</strong> ${funeralData.total}</p>
-    <p><strong>시작일:</strong> ${funeralData.startedAt}</p>
-  `;
-        } else {
-            document.getElementById("funeral-status").innerHTML = `<p>신청한 서비스가 없습니다.</p>`;
-        }
-
+                const payment = data[0];
+                document.getElementById("funeral-status").innerHTML = `
+        <p><strong>가입 서비스:</strong> ${payment.serviceType}</p>
+        <p><strong>월 납입액:</strong> ${payment.monthly}</p>
+        <p><strong>납입 기간:</strong> ${payment.duration}</p>
+        <p><strong>총액:</strong> ${payment.totalAmount}원</p>
+        <p><strong>시작일:</strong> ${new Date(payment.paidAt).toISOString().slice(0, 10)}</p>
+      `;
+            })
+            .catch(err => {
+                console.error("서비스 조회 오류:", err);
+                document.getElementById("funeral-status").innerHTML = "<p>서비스 정보를 불러오지 못했습니다.</p>";
+            });
     </script>
 </body>
 
