@@ -2,27 +2,35 @@
 <html lang="ko">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Miracle Group</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    /* ── 기본 리셋 ── */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    body,
     html {
-      height: 100%;
       font-family: 'Noto Sans KR', sans-serif;
       color: white;
-      overflow: hidden;
+      overflow-y: auto;
+      /* 브라우저 스크롤 유지 */
+      scroll-behavior: smooth;
     }
 
-    video#bg-video {
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      color: white;
+      overflow-y: hidden;
+      /* body 스크롤 숨김 */
+    }
+
+    /* ── 섹션1 비디오 페이드 인/아웃 ── */
+    #section1 .section-bg-video {
       position: fixed;
       top: 0;
       left: 0;
@@ -30,8 +38,15 @@
       height: 100vh;
       object-fit: cover;
       z-index: -1;
+      opacity: 1;
+      transition: opacity 1s ease-out;
     }
 
+    #section1.hide-video .section-bg-video {
+      opacity: 0;
+    }
+
+    /* ── 헤더 ── */
     .main-header {
       position: fixed;
       top: 0;
@@ -78,6 +93,7 @@
       text-decoration: none;
     }
 
+    /* ── 사이드 메뉴 ── */
     #menu-toggle {
       display: none;
     }
@@ -104,12 +120,15 @@
       font-weight: 500;
     }
 
+    /* ── 메인 텍스트 ── */
     .main-text {
-      position: absolute;
-      top: 55%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding: 0 20px;
     }
 
     .main-text h1 {
@@ -122,13 +141,14 @@
     .main-text h2 {
       font-size: 32px;
       font-weight: normal;
-      margin-bottom: 60px;
+      margin-bottom: 20px;
     }
 
     .main-text h3 {
       font-size: 24px;
       font-weight: normal;
       margin-top: 5px;
+      margin-bottom: 40px;
     }
 
     .main-text a {
@@ -141,7 +161,7 @@
       border: 1px solid white;
       border-radius: 30px;
       text-decoration: none;
-      margin-top: 20px;
+      transition: all 0.3s ease;
     }
 
     .main-text a img {
@@ -154,6 +174,7 @@
       color: black;
     }
 
+    /* ── 푸터 ── */
     .site-footer {
       position: fixed;
       bottom: 0;
@@ -165,7 +186,7 @@
       padding-bottom: 5px;
     }
 
-    .site-footer .footer-row {
+    .site-footer .footer-compact {
       display: flex;
       justify-content: center;
       gap: 20px;
@@ -178,51 +199,415 @@
       text-decoration: none;
     }
 
+    /* ── 섹션2 스타일 ── */
+    #section2 {
+      height: 100vh;
+      background-color: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    #section2.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #section2 .section-bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    #section2.show .section-bg-video {
+      opacity: 1;
+    }
+
+    #section2 .info-overlay {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    #section2 .info-block {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px 30px;
+      border-radius: 10px;
+      color: white;
+      max-width: 300px;
+    }
+
+    #section2 .info-block h3 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #section2 .info-block p {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    #section2 .final-ment {
+      width: 100%;
+      text-align: center;
+      margin-top: 40px;
+      padding: 0 20px;
+      color: white;
+    }
+
+    #section2 .final-ment h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #section2 .final-ment p {
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 300px;
+      margin: 0 auto;
+      white-space: pre-line;
+    }
+
+    /* ── 섹션3 스타일 ── */
+    #section3 {
+      height: 100vh;
+      background-color: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* 위쪽부터 쌓기 */
+      padding-top: 150px;
+      /* 박스 위쪽 여백 */
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    #section3.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #section3 .section-bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    #section3.show .section-bg-video {
+      opacity: 1;
+    }
+
+    #section3 .info-overlay {
+      position: relative;
+      z-index: 1;
+      height: auto;
+      /* 높이 자동 */
+      display: flex;
+      flex-direction: row;
+      /* 가로 배치 */
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding: 0 20px;
+      text-align: center;
+      color: white;
+    }
+
+    #section3 .info-block {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 10px;
+      color: white;
+      width: 45%;
+      min-width: 300px;
+    }
+
+    #section3 .info-block h3 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #section3 .info-block p {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── 섹션3 작은 버튼(.inner-btn) ── */
+    #section3 .info-block .inner-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    #section3 .info-block .inner-btn:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* ── 섹션3 최종 멘트 ── */
+    #section3 .final-ment {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      text-align: center;
+      margin-top: 150px;
+      /* 두 박스 바로 아래에서 내려오도록 */
+      padding: 0 20px;
+      color: white;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    #section3.show .final-ment {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #section3 .final-ment h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    #section3 .final-ment p {
+      font-size: 1rem;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    /* ── PC 전용 문의 섹션 ── */
+    .pc-contact-section {
+      background-color: #111;
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .pc-contact-section .links {
+      margin-bottom: 20px;
+    }
+
+    .pc-contact-section .links a {
+      display: inline-block;
+      margin: 0 8px;
+      padding: 8px 16px;
+      border: 1px solid white;
+      border-radius: 20px;
+      font-size: 14px;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .pc-contact-section .links a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pc-contact-section h2 {
+      font-size: 32px;
+      margin: 20px 0 10px;
+    }
+
+    .pc-contact-section p.subtitle {
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    .pc-contact-section .contact-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 60px;
+      margin-bottom: 40px;
+    }
+
+    .pc-contact-section .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+    }
+
+    .pc-contact-section .contact-item.phone {
+      background-color: #00c73c;
+      border-radius: 24px;
+      padding: 12px 24px;
+    }
+
+    .pc-contact-section .contact-item.phone span.icon {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 20px;
+      vertical-align: middle;
+    }
+
+    .pc-contact-section .contact-item.kakao {
+      background-color: #fae100;
+      border-radius: 24px;
+      padding: 12px 24px;
+    }
+
+    .pc-contact-section .contact-item.kakao span.icon {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 20px;
+      vertical-align: middle;
+    }
+
+    .pc-contact-section .email-form {
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    .pc-contact-section .email-form input[type="email"] {
+      padding: 12px;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    .pc-contact-section .email-form button {
+      padding: 12px 24px;
+      background-color: #666;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      vertical-align: middle;
+      transition: background-color 0.3s;
+    }
+
+    .pc-contact-section .email-form button:hover {
+      background-color: #444;
+    }
+
+    /* ── PC 문의 섹션: 전화·카카오톡 버튼 ── */
+    .contact-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 60px;
+      /* 버튼 간 간격 */
+      margin-bottom: 40px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 24px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* ① 전화 버튼 */
+    .contact-item.phone {
+      background-color: #00c73c;
+      color: white;
+      padding: 12px 24px;
+    }
+
+    .contact-item.phone .icon {
+      font-size: 20px;
+    }
+
+    /* ② 카카오톡 버튼 */
+    .contact-item.kakao {
+      background-color: #fae100;
+      border-radius: 24px;
+      padding: 12px 24px;
+    }
+
+    /* 내부 <a> 태그가 텍스트와 아이콘을 수평으로 정렬하도록 */
+    .contact-item.kakao a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #3a1e1e;
+      /* 진한 갈색 계열 */
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    /* 아이콘 크기를 전화 버튼 높이에 맞춰 20px 로 제한 */
+    .contact-item.kakao img {
+      height: 20px;
+      width: auto;
+    }
+
+    /* 호버 효과 */
+    .contact-item.phone:hover {
+      background-color: #00b135;
+    }
+
+    .contact-item.kakao:hover {
+      background-color: #f9d500;
+    }
+
+    /* ── 공통 애니메이션 ── */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @media screen and (max-width: 768px) {
-      .main-header {
-        height: auto;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 16px;
-        position: relative;
-      }
 
-      .hamburger {
-        position: absolute;
-        left: 16px;
-        top: 12px;
-      }
-
-      .logo-area {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        top: 6px;
-      }
-
-      .logo-area img {
-        height: 36px;
-      }
-
-      .top-nav {
-        position: absolute;
-        right: 16px;
-        top: 12px;
-      }
-
-      .top-nav a {
-        font-size: 12px;
-        margin-left: 8px;
-      }
-
+      /* 헤더 & 메뉴 크기 조정 */
       .main-text h1 {
         font-size: 36px;
       }
 
       .main-text h2 {
         font-size: 22px;
-        margin-bottom: 30px;
       }
 
       .main-text h3 {
@@ -232,18 +617,14 @@
       .main-text a {
         font-size: 14px;
         padding: 10px 16px;
-        margin-top: 16px;
       }
 
-      .site-footer {
-        font-size: 10px;
-        padding: 8px;
+      .logo-area img {
+        height: 36px;
       }
 
-      .site-footer .footer-row {
-        flex-direction: column;
-        gap: 5px;
-        margin-bottom: 4px;
+      .top-nav a {
+        font-size: 12px;
       }
 
       .menu-slide {
@@ -251,21 +632,56 @@
         gap: 10px;
         left: 10px;
         padding: 12px;
+        margin-top: 20px;
+        /* ← 이 줄 추가! */
       }
 
-      video#bg-video {
-        object-fit: cover;
+      .site-footer {
+        font-size: 10px;
+        padding: 8px;
+      }
+
+      .site-footer .footer-compact:last-child {
+        text-align: center;
+        line-height: 1.5;
+        padding-bottom: 10px;
+      }
+
+      /* 섹션3 박스가 너무 작아지면 세로 배치로 변경 */
+      #section3 .info-overlay {
+        flex-direction: row;
+        /* ← column → row 변경 */
+        flex-wrap: wrap;
+        /* 넘칠 경우 줄바꿈 가능하도록 */
+        justify-content: center;
+        gap: 20px;
+      }
+
+      #section3 .info-block {
+        width: 80%;
+        min-width: unset;
+      }
+
+      #section3 .final-ment {
+        margin-top: 40px;
+        /* 충분한 위 여백 추가 */
+        padding-bottom: 60px;
+        /* 하단 공간 추가 */
+        font-size: 14px;
+      }
+
+      #section3 {
+        height: auto;
+        /* ✅ 이거 꼭 넣어야 스크롤됨 */
+        padding-bottom: 80px;
+        /* 아래로 충분히 내려가게 */
       }
     }
   </style>
 </head>
 
 <body>
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="img/dog.mp4" type="video/mp4">
-    Your browser does not support HTML5 video.
-  </video>
-
+  <!-- ── 헤더 (로그인/회원가입, 햄버거, 로고) ── -->
   <header class="main-header">
     <div class="hamburger" onclick="document.getElementById('menu-toggle').click()">
       <div></div>
@@ -273,7 +689,7 @@
       <div></div>
     </div>
     <div class="logo-area">
-      <img src="img/logo.png" alt="Miracle Group 로고">
+      <img src="img/logo.png" alt="Miracle Group 로고" />
     </div>
     <nav class="top-nav">
       <a href="login.html" id="login-link">로그인</a>
@@ -282,6 +698,7 @@
     </nav>
   </header>
 
+  <!-- ── 사이드 메뉴 ── -->
   <input type="checkbox" id="menu-toggle" />
   <div class="menu-slide">
     <a href="company.html">회사소개</a>
@@ -292,58 +709,177 @@
     <a href="products.html">쇼핑몰</a>
   </div>
 
-  <div class="main-text">
-    <h1>Miracle Group</h1>
-    <h2>당신의 반려동물을 위한 공간</h2>
-    <h3>반려동물의 처음부터 마지막까지 함께합니다</h3>
-    <a href="https://open.kakao.com/o/sEJKz8wh" target="_blank">
-      상담하기
-      <img src="img/kakao.png" alt="카카오톡 아이콘">
-    </a>
-  </div>
+  <!-- ── 섹션1: 메인(페이드 대상) ── -->
+  <section id="section1" class="info-section">
+    <!-- 백그라운드 비디오 -->
+    <video autoplay muted loop playsinline class="section-bg-video">
+      <source src="img/dog.mp4" type="video/mp4" />
+    </video>
 
-  <footer class="site-footer">
-    <div class="footer-compact">
-      <a href="privacy.html">개인정보처리방침</a> · <a href="youth-policy.html">청소년보호정책</a> · <a href="notice.html">고객센터</a>
+    <!-- 메인 텍스트 -->
+    <div class="main-text">
+      <h1>Miracle Group</h1>
+      <h2>당신의 반려동물을 위한 공간</h2>
+      <h3>반려동물의 처음부터 마지막까지 함께합니다</h3>
+      <a href="https://open.kakao.com/o/sEJKz8wh" target="_blank">
+        상담하기
+        <img src="img/kakao.png" alt="카카오톡 아이콘">
+      </a>
     </div>
-    <div class="footer-compact">
-      미라클그룹반려상조 주소: 서울특별시 강남구 선릉로 533 / 대표전화: 02-566-1121
+  </section>
+
+  <!-- ── 섹션2 ── -->
+  <section id="section2" class="info-section">
+    <video autoplay muted loop playsinline class="section-bg-video">
+      <source src="img/shutterstock_3411433673.mp4" type="video/mp4" />
+    </video>
+    <div class="info-overlay">
+      <div class="info-block">
+        <h3>상담 서비스</h3>
+        <p>마음의 평화를 위한 지원을 제공합니다.</p>
+      </div>
+      <div class="info-block">
+        <h3>기억의 공간</h3>
+        <p>소중한 기억을 간직하는 방법을 안내합니다.</p>
+      </div>
+      <div class="final-ment">
+        <h2>사랑하는 반려동물과의 작별</h2>
+        <p>
+          미라클 그룹은 소중한 반려동물의 마지막 순간을 존중하며<br />
+          사랑과 애정으로 작별 인사를 도와드립니다.
+        </p>
+      </div>
     </div>
-  </footer>
+  </section>
+
+  <!-- ── 섹션3 ── -->
+  <section id="section3" class="info-section">
+    <video autoplay muted loop playsinline class="section-bg-video">
+      <source src="img/shutterstock_3663361381.mp4" type="video/mp4" />
+    </video>
+    <div class="info-overlay">
+      <div class="info-block">
+        <h3>진달래추모공원</h3>
+        <p>진달래추모공원 바로가기</p>
+        <a class="inner-btn" href="https://www.jindallae.kr/" target="_blank">진달래추모공원</a>
+      </div>
+      <div class="info-block">
+        <h3>아산추모공원</h3>
+        <p>아산추모공원 바로가기</p>
+        <a class="inner-btn" href="funeral.html" target="_blank">아산추모공원</a>
+      </div>
+    </div>
+    <div class="final-ment">
+      <h2>사랑하는 반려동물과의 또 다른 순간</h2>
+      <p>
+        미라클 그룹은 반려동물과의 모든 순간을 소중히 여기며<br />
+        최고의 서비스를 제공해드립니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 푸터 ── -->
+  <!-- ==============================
+     ⬇️  2) HTML (</body> 바로 위)  ⬇️
+   ============================== -->
+  <section class="pc-contact-section">
+    <!-- 1) 상단 약관 링크 -->
+    <div class="links">
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="youth-policy.html">청소년보호정책</a>
+      <a href="notice.html">고객센터</a>
+    </div>
+
+    <!-- 2) 사이트 제목 + 서브타이틀 -->
+    <h2>Miracle Group</h2>
+    <p class="subtitle">사랑하는 반려동물을 위한 마지막 작별 인사</p>
+
+    <!-- 3) 상담(전화) · 카카오톡 버튼 -->
+    <div class="contact-row">
+      <!-- ① 전화 버튼 -->
+      <div class="contact-item phone">
+        상담 02-566-1121
+        <span class="icon">📞</span>
+      </div>
+
+      <!-- ② 카카오톡 버튼: contact-item kakao 로 감싸야 아래 CSS가 적용됩니다. -->
+      <div class="contact-item kakao">
+        <a href="https://open.kakao.com/o/sEJKz8wh" target="_blank">
+          <!-- ③ 아이콘 이미지는 높이(height)만 20px 으로 줄였습니다. -->
+          <img src="img/kakao.png" alt="카카오톡 아이콘" />
+          카카오톡 상담
+        </a>
+      </div>
+    </div>
+  </section>
 
 
- <script>
-  const loginLink = document.getElementById("login-link");
-  const signupLink = document.getElementById("signup-link");
-  const mypageLink = document.getElementById("mypage-link");
+  <script>
+    // 섹션1, 섹션2, 섹션3를 모두 가져옵니다.
+    const section1 = document.getElementById('section1');
+    const section2 = document.getElementById('section2');
+    const section3 = document.getElementById('section3');
 
-  let user = null;
-  try {
-    user = JSON.parse(localStorage.getItem("user"));
-  } catch (e) {
-    user = null;
-  }
+    // IntersectionObserver 콜백 정의
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // ── section1 비디오 페이드아웃/인 처리 ──
+          if (entry.target.id === 'section1') {
+            if (!entry.isIntersecting) {
+              section1.classList.add('hide-video');
+            } else {
+              section1.classList.remove('hide-video');
+            }
+          }
+          // ── section2 비디오 페이드인/아웃 처리 ──
+          if (entry.target.id === 'section2') {
+            if (entry.isIntersecting) {
+              section2.classList.add('show');
+            } else {
+              section2.classList.remove('show');
+            }
+          }
+          // ── section3 페이드인/아웃 처리 ──
+          if (entry.target.id === 'section3') {
+            if (entry.isIntersecting) {
+              section3.classList.add('show');
+            } else {
+              section3.classList.remove('show');
+            }
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-  if (user) {
-    loginLink.style.display = "none";
-    signupLink.style.display = "none";
+    // 관찰 대상 등록
+    observer.observe(section1);
+    observer.observe(section2);
+    observer.observe(section3);
+  </script>
 
-    if (user.admin) {
-      mypageLink.textContent = "관리자페이지";
-      mypageLink.href = "admin.html";
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+      document.getElementById("login-link").style.display = "none";
+      document.getElementById("signup-link").style.display = "none";
+
+      const mypageLink = document.getElementById("mypage-link");
+      mypageLink.style.display = "inline";
+
+      if (user.admin) {
+        mypageLink.setAttribute("href", "admin.html");
+        mypageLink.textContent = "관리자페이지";
+      } else {
+        mypageLink.setAttribute("href", "account-details.html");
+        mypageLink.textContent = "마이페이지";
+      }
     } else {
-      mypageLink.textContent = "마이페이지";
-      mypageLink.href = "account-details.html";
+      document.getElementById("mypage-link").style.display = "none";
     }
-
-    mypageLink.style.display = "inline-block";
-  } else {
-    loginLink.style.display = "inline-block";
-    signupLink.style.display = "inline-block";
-    mypageLink.style.display = "none";
-  }
-</script>
-
+  </script>
 </body>
 
 </html>
