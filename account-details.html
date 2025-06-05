@@ -183,7 +183,7 @@
 
     <script>
         // 이미 위에 user 선언됨 → 그대로 재사용
-        fetch(`https://miraclepet-backend.onrender.com/api/payment/user/${user.user_id}`)
+        fetch(`https://miraclepet.kr/api/payment/user/${user.user_id}`)
             .then(res => res.json())
             .then(data => {
                 if (!data.length) {
