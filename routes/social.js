@@ -11,41 +11,34 @@ router.post("/social-signup", async (req, res) => {
       postalCode,
       address,
       phone,
-      petName,
-      petBreed,
-      petBirth
+      pet
     } = req.body;
 
-    if (!name || !phone || !petName || !petBreed) {
+    if (!name || !phone || !pet?.name || !pet?.breed) {
       return res.status(400).json({ message: "필수 항목 누락" });
     }
 
-    // ✅ 필수값 강제 채우기
-    const dummyPassword = `socialLogin_${Date.now()}`;
-    const dummyUserId = `social_${Date.now()}`;
-
-    const timestamp = Date.now(); // 매번 다르게 만들기
-    console.log("📌 timestamp 값:", timestamp);
+    const timestamp = Date.now();
     if (!timestamp) {
       console.log("❗ timestamp null 에러 발생");
       return res.status(500).json({ message: "타임스탬프 오류" });
     }
 
     const newUser = new User({
-      user_id: `social_${timestamp}`,           // ✅ 추가
-      password: `socialpass_${timestamp}`,      // ✅ 추가
+      user_id: `social_${timestamp}`,
+      password: `socialpass_${timestamp}`,
       name,
       postalCode,
       address,
       phone,
       pet: {
-        name: petName,
-        breed: petBreed,
-        birth: petBirth
+        name: pet.name,
+        breed: pet.breed,
+        birth: pet.birth
       }
     });
-    console.log("🧾 저장할 유저:", newUser);
 
+    console.log("🧾 저장할 유저:", newUser);
     await newUser.save();
 
     return res.status(200).json({ message: "가입 성공" });
