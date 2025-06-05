@@ -102,6 +102,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
+
 // 회원정보 수정 라우터
 
 router.post('/user/update', async (req, res) => {

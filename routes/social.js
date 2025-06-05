@@ -32,10 +32,8 @@ router.post("/social-signup", async (req, res) => {
     }
 
     const newUser = new User({
-      user_id: `social_${timestamp}`, // ✅ null 안 들어가게
-      ser_id: `social_${timestamp}`,
-      password: `socialpass_${timestamp}`,
-      email: `social_${timestamp}@dummy.com`,
+      user_id: `social_${timestamp}`,           // ✅ 추가
+      password: `socialpass_${timestamp}`,      // ✅ 추가
       name,
       postalCode,
       address,
