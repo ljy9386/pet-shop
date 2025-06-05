@@ -632,6 +632,8 @@
         gap: 10px;
         left: 10px;
         padding: 12px;
+        margin-top: 20px;
+        /* ← 이 줄 추가! */
       }
 
       .site-footer {
@@ -647,13 +649,32 @@
 
       /* 섹션3 박스가 너무 작아지면 세로 배치로 변경 */
       #section3 .info-overlay {
-        flex-direction: column;
+        flex-direction: row;
+        /* ← column → row 변경 */
+        flex-wrap: wrap;
+        /* 넘칠 경우 줄바꿈 가능하도록 */
+        justify-content: center;
         gap: 20px;
       }
 
       #section3 .info-block {
         width: 80%;
         min-width: unset;
+      }
+
+      #section3 .final-ment {
+        margin-top: 40px;
+        /* 충분한 위 여백 추가 */
+        padding-bottom: 60px;
+        /* 하단 공간 추가 */
+        font-size: 14px;
+      }
+
+      #section3 {
+        height: auto;
+        /* ✅ 이거 꼭 넣어야 스크롤됨 */
+        padding-bottom: 80px;
+        /* 아래로 충분히 내려가게 */
       }
     }
   </style>
@@ -836,6 +857,28 @@
     observer.observe(section1);
     observer.observe(section2);
     observer.observe(section3);
+  </script>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+      document.getElementById("login-link").style.display = "none";
+      document.getElementById("signup-link").style.display = "none";
+
+      const mypageLink = document.getElementById("mypage-link");
+      mypageLink.style.display = "inline";
+
+      if (user.admin) {
+        mypageLink.setAttribute("href", "admin.html");
+        mypageLink.textContent = "관리자페이지";
+      } else {
+        mypageLink.setAttribute("href", "account-details.html");
+        mypageLink.textContent = "마이페이지";
+      }
+    } else {
+      document.getElementById("mypage-link").style.display = "none";
+    }
   </script>
 </body>
 
