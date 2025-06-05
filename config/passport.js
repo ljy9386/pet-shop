@@ -7,10 +7,7 @@ module.exports = (passport) => {
   // ✅ Kakao 로그인 전략
   passport.use(new KakaoStrategy({
     clientID: process.env.KAKAO_CLIENT_ID,
-    callbackURL:
-      process.env.NODE_ENV === "production"
-        ? "https://miraclepet.kr/auth/kakao/callback"
-        : "http://localhost:3000/auth/kakao/callback",
+    callbackURL: "https://miraclepet.kr/auth/kakao/callback"
   }, async (accessToken, refreshToken, profile, done) => {
     console.log("🎯 카카오 로그인 성공:", profile._json);
     return done(null, profile);
@@ -20,9 +17,7 @@ module.exports = (passport) => {
   passport.use(new NaverStrategy({
     clientID: process.env.NAVER_CLIENT_ID,
     clientSecret: process.env.NAVER_CLIENT_SECRET,
-    callbackURL: process.env.NODE_ENV === 'production'
-      ? 'https://miraclepet.kr/auth/naver/callback'
-      : 'http://localhost:3000/auth/naver/callback'
+    callbackURL: 'https://miraclepet.kr/auth/naver/callback'
   }, (accessToken, refreshToken, profile, done) => {
     console.log("✅ NAVER PROFILE:", profile);
     const userData = {
@@ -51,9 +46,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.NODE_ENV === 'production'
-    ? 'https://miraclepet.kr/auth/google/callback'
-    : 'http://localhost:3000/auth/google/callback'
+  callbackURL: 'https://miraclepet.kr/auth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
   const user = {
     user_id: `google_${profile.id}`,
