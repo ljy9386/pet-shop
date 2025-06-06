@@ -244,56 +244,51 @@
     });
 
     // ✅ 카카오 간편 로그인 팝업 방식
-    document.getElementById("kakao-login-btn").addEventListener("click", function () {
-      Kakao.Auth.login({
-        scope: "profile_nickname",
-        success: function (authObj) {
-          Kakao.API.request({
-            url: "/v2/user/me",
-            success: function (res) {
-              const userId = `kakao_${res.id}`;
-              const userData = {
-                user_id: userId,
-                email: res.kakao_account?.email || "",
-                nickname: res.kakao_account?.profile?.nickname || ""
-              };
-              fetch("https://miraclepet.kr/api/social-signup", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(userData)
+ document.getElementById("kakao-login-btn").addEventListener("click", function () {
+    // 1) 이미 로그인된 세션을 지우고 싶으면 logout() 호출 (401 에러는 무시)
+    Kakao.Auth.logout();
+
+    // 2) 팝업을 띄우려면 login() 만 사용 (prompt 옵션 제거)
+    Kakao.Auth.login({
+      scope: "profile_nickname", 
+      success: function (authObj) {
+        // 로그인 성공 → 사용자 정보 요청
+        Kakao.API.request({
+          url: "/v2/user/me",
+          success: function (res) {
+            // 서버에 카카오 콜백 요청하고, 성공 시 localStorage 세팅 후 index.html 이동
+            fetch("https://miraclepet.kr/auth/kakao/callback", { method: "GET" })
+              .then(response => {
+                if (response.ok) {
+                  response.json().then(data => {
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    location.href = "index.html";
+                  });
+                } else {
+                  alert("카카오 로그인 후처리 실패");
+                }
               });
-              fetch(`https://miraclepet.kr/api/user/check/${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                  localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
-                  if (data.exists) {
-                    // 이미 가입된 사용자 → 바로 메인페이지
-                    window.location.href = "index.html";
-                  } else {
-                    // 신규 사용자 → 추가 정보 입력
-                    window.location.href = "social-signup.html";
-                  }
-                })
-                .catch(error => {
-                  alert("유저 확인 중 오류");
-                  console.error(error);
-                });
-            },
-            fail: function (error) {
-              alert("유저 정보 가져오기 실패");
-              console.error(error);
-            }
-          });
-        },
-        fail: function (err) {
-          alert("카카오 로그인 실패");
-          console.error(err);
-        }
-      });
+          },
+          fail: function (error) {
+            console.error("유저 정보 가져오기 실패:", error);
+          }
+        });
+      },
+      fail: function (err) {
+        alert("카카오 로그인 실패");
+        console.error(err);
+      }
     });
-  </script>
+  });
+
+  // (팝업 승인 후 window.load 로직은 그대로 유지)
+  window.addEventListener("load", function () {
+    if (Kakao.Auth.getAccessToken()) {
+      // authorize()가 아닌 login()을 사용했으므로, 이미 success 콜백에서 처리되었을 거임.
+      // 여기서는 특별히 추가 처리할 필요 없음.
+    }
+  });
+</script>
 
 </body>
 
