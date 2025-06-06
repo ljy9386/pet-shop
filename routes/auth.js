@@ -145,88 +145,115 @@ router.get('/kakao/callback',
 // 네이버 로그인 시작
 router.get('/naver', passport.authenticate('naver'));
 
-
 // 네이버 콜백
-router.get(
-  '/naver/callback',
+router.get('/naver/callback',
   passport.authenticate('naver', {
     failureRedirect: '/login',
     session: true
   }),
   async (req, res) => {
     const user = req.user;
-    console.log('✅ NAVER USER:', user);
+    console.log("✅ NAVER USER:", user);
 
-    // 세션 저장
+    // ✅ 세션 저장
     req.logIn(user, async (err) => {
       if (err) {
-        console.error('❌ 세션 저장 실패:', err);
+        console.error("❌ 세션 저장 실패:", err);
         return res.redirect('/login');
       }
 
-      // (신규·기존 상관없이) 바로 index.html로 리다이렉트
+      // ✅ DB 확인
+      const existingUser = await User.findOne({ user_id: user.user_id });
+
+      if (!existingUser) {
+        // 신규 유저: 추가정보 입력용 세션 저장
+        req.session.tempUser = user;
+
+        // ✅ 팝업 안에서 메인창 이동 + 팝업 닫기
+        return res.send(`
+          <script>
+            if (window.opener) {
+              window.opener.location.href = "/social-signup.html";
+              window.close();
+            } else {
+              window.location.href = "/social-signup.html";
+            }
+          </script>
+        `);
+      }
+
+      // 기존 회원: 바로 메인으로 이동
       return res.send(`
-        <script>
-          const user = ${JSON.stringify(user)};
-          localStorage.setItem("user", JSON.stringify(user));
-          if (window.opener) {
-            window.opener.location.href = "/index.html";
-            window.close();
-          } else {
-            window.location.href = "/index.html";
-          }
-        </script>
-      `);
+  <script>
+    const user = ${JSON.stringify(user)};
+    localStorage.setItem("user", JSON.stringify(user));
+
+    if (window.opener) {
+      window.opener.location.href = "/index.html";
+      window.close();
+    } else {
+      window.location.href = "/index.html";
+    }
+  </script>
+`);
+
     });
   }
 );
 
 // 구글 로그인 시작
-// (passport 전략 설정 시 'google'으로 등록되어 있어야 합니다)
-router.get(
-  '/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email']
-  })
-);
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-
-// 구글 콜백
-router.get(
-  '/google/callback',
+// 구글 로그인 콜백
+router.get('/google/callback',
   passport.authenticate('google', {
     failureRedirect: '/login',
     session: true
   }),
   async (req, res) => {
     const user = req.user;
-    console.log('✅ GOOGLE USER:', user);
+    console.log("✅ GOOGLE USER:", user);
 
-    // 세션 저장
     req.logIn(user, async (err) => {
       if (err) {
-        console.error('❌ 세션 저장 실패:', err);
+        console.error("❌ 구글 세션 저장 실패:", err);
         return res.redirect('/login');
       }
 
-      // (신규·기존 상관없이) 바로 index.html로 리다이렉트
-      return res.send(`
-        <script>
-          const user = ${JSON.stringify(user)};
-          localStorage.setItem("user", JSON.stringify(user));
-          if (window.opener) {
-            window.opener.localStorage.setItem("user", JSON.stringify(user));
-            window.opener.location.href = "/index.html";
-            window.close();
-          } else {
-            window.location.href = "/index.html";
-          }
-        </script>
-      `);
+      const existingUser = await User.findOne({ user_id: user.user_id });
+
+      if (!existingUser) {
+        req.session.tempUser = user;
+        return res.send(`
+          <script>
+            if (window.opener) {
+              window.opener.location.href = "/social-signup.html";
+              window.close();
+            } else {
+              window.location.href = "/social-signup.html";
+            }
+          </script>
+        `);
+      }
+
+ return res.send(`
+  <script>
+    const user = ${JSON.stringify(user)};
+    localStorage.setItem("user", JSON.stringify(user));
+
+    if (window.opener) {
+      window.opener.localStorage.setItem("user", JSON.stringify(user));
+      window.opener.location.href = "/index.html";
+      window.close();
+    } else {
+      window.location.href = "/index.html";
+    }
+  </script>
+`);
+
     });
   }
 );
-
 
 
 
