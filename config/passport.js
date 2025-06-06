@@ -1,6 +1,6 @@
 // config/passport.js
 const passport = require('passport');
-const User = require('../models/User');
+const User = require('../models/User');                       // ← User 모델 import 추가
 const KakaoStrategy = require('passport-kakao').Strategy;
 const NaverStrategy = require('passport-naver').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -8,28 +8,28 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 module.exports = (passport) => {
   // ✅ Kakao 로그인 전략
   passport.use(new KakaoStrategy({
-  clientID: "YOUR_REST_API_KEY",
-  callbackURL: "https://miraclepet.kr/auth/kakao/callback"
-}, async (accessToken, refreshToken, profile, done) => {
-  try {
-    let user = await User.findOne({ user_id: profile.id });
-    if (!user) {
-      user = await User.create({
-        user_id: profile.id,
-        name: profile.displayName,
-        email: (profile._json.kakao_account.email || ""),
-        password: `social_${Date.now()}`,
-        address: "",
-        phone: "",
-        postalCode: "",
-        pet: { name: "", breed: "", birth: "" }
-      });
+    clientID: process.env.KAKAO_REST_API_KEY,                  // ← 환경변수에서 REST API 키를 가져오도록 수정
+    callbackURL: "https://miraclepet.kr/auth/kakao/callback"
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      let user = await User.findOne({ user_id: profile.id });
+      if (!user) {
+        user = await User.create({
+          user_id: profile.id,
+          name: profile.displayName,
+          email: (profile._json.kakao_account.email || ""),
+          password: `social_${Date.now()}`,
+          address: "",
+          phone: "",
+          postalCode: "",
+          pet: { name: "", breed: "", birth: "" }
+        });
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
     }
-    return done(null, user);
-  } catch (err) {
-    return done(err);
-  }
-}));
+  }));
 
   // ✅ Naver 로그인 전략
   passport.use(new NaverStrategy({
@@ -58,7 +58,6 @@ module.exports = (passport) => {
 };
 
 // ✅ 구글 로그인 전략
-
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -72,4 +71,3 @@ passport.use(new GoogleStrategy({
   };
   return done(null, user);
 }));
-

@@ -1,9 +1,9 @@
 // routes/auth.js
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');   // 비밀번호 해시용
 const router = express.Router();
-const User = require('../models/User');
-const passport = require('passport');
+const User = require('../models/User');   // 사용자 모델 연결
+const passport = require('passport');     // Passport import
 
 // ================================
 // 1) 일반 회원가입
@@ -147,17 +147,32 @@ router.post('/login', async (req, res) => {
 // ================================
 // 3) 카카오 로그인
 // ================================
-router.get('/auth/kakao', passport.authenticate('kakao'));
+
+// (★ 이전에는 router.get('/auth/kakao', …) 였지만, server.js에서 app.use('/auth', authRouter) 되었으므로
+//   여기서는 '/kakao' 로만 선언해야 최종 경로가 '/auth/kakao' 가 됩니다.)
+router.get('/kakao', passport.authenticate('kakao'));
 
 router.get(
-  '/auth/kakao/callback',
+  '/kakao/callback',
   passport.authenticate('kakao', { failureRedirect: '/login.html', session: true }),
   async (req, res) => {
-    // passport.authenticate('kakao')를 통해 req.user가 채워짐
+    // passport.authenticate('kakao')를 통해 req.user가 채워집니다.
     let existingUser = await User.findOne({ user_id: req.user.user_id });
     if (!existingUser) {
-      existingUser = await User.create({ /* 신규 User 생성 */ });
+      // 신규 회원이면 바로 User를 생성하고, 이후 social-signup이나 다른 페이지로 보낼 수도 있습니다.
+      existingUser = await User.create({
+        user_id: req.user.user_id,
+        name: req.user.displayName,
+        email: req.user._json && req.user._json.kakao_account.email,
+        password: `social_${Date.now()}`, // 임시 비밀번호
+        address: '',
+        phone: '',
+        postalCode: '',
+        pet: { name: '', breed: '', birth: '' }
+      });
     }
+
+    // 로그인 성공 후, 클라이언트(LocalStorage)에 user 정보를 저장하고 index.html로 이동
     return res.send(`
       <!DOCTYPE html>
       <html>
@@ -208,7 +223,7 @@ router.get(
       const existingUser = await User.findOne({ user_id: user.user_id });
 
       if (!existingUser) {
-        // 신규 유저 → 추가정보 입력 페이지로 이동 (localStorage에 탑재)
+        // 신규 회원 → 추가정보 입력 페이지로 이동 (localStorage에 탑재)
         req.session.tempUser = user;
         return res.send(`
           <script>
@@ -224,7 +239,7 @@ router.get(
         `);
       }
 
-      // 기존 유저가 있으면 로그인 상태 유지 후 메인으로
+      // 기존 회원이 있으면 로그인 상태 유지 후 메인으로
       return res.send(`
         <script>
           const userData = ${JSON.stringify({
@@ -276,7 +291,7 @@ router.get(
       const existingUser = await User.findOne({ user_id: user.user_id });
 
       if (!existingUser) {
-        // 신규 유저 → 추가정보 입력 페이지로 이동 (localStorage에 탑재)
+        // 신규 회원 → 추가정보 입력 페이지로 이동 (localStorage에 탑재)
         req.session.tempUser = user;
         return res.send(`
           <script>
@@ -292,7 +307,7 @@ router.get(
         `);
       }
 
-      // 기존 유저가 있으면 로그인 상태 유지 후 메인으로
+      // 기존 회원이 있으면 로그인 상태 유지 후 메인으로
       return res.send(`
         <script>
           const userData = ${JSON.stringify({

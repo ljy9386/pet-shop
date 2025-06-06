@@ -189,7 +189,6 @@
             네이버로 간편 로그인
           </a>
 
-
           <!-- 구글 -->
           <a href="/auth/google" style="background-color: #ffffff; color: #000; border-radius: 8px; padding: 12px 20px;
             font-size: 14px; font-weight: bold; text-decoration: none; border: 1px solid #ccc;">
@@ -244,11 +243,11 @@
     });
 
     // ✅ 카카오 간편 로그인 팝업 방식
- document.getElementById("kakao-login-btn").addEventListener("click", function() {
-    // 카카오 OAuth는 백엔드 Passport가 처리하므로 단순 redirect
-    window.location.href = "/auth/kakao";
-  });
-</script>
+    document.getElementById("kakao-login-btn").addEventListener("click", function() {
+      // 카카오 OAuth는 백엔드 Passport가 처리하므로 단순 redirect
+      window.location.href = "/auth/kakao";
+    });
+  </script>
 
 </body>
 
