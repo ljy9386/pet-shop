@@ -153,14 +153,6 @@
     window.location.href = "login.html";
   }
 </script>
- <script>
-    // localStorage에 저장된 유저 정보 불러오기
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    // 이름, 전화번호, 주소 중 하나라도 없으면 account-detail.html로 이동
-    if (!user.name || !user.phone || !user.address) {
-      window.location.href = "account-details.html";
-    }
-  </script>
 </body>
 
 </html>
