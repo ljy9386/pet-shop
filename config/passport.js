@@ -9,6 +9,7 @@ module.exports = (passport) => {
   // ✅ Kakao 로그인 전략
   passport.use(new KakaoStrategy({
     clientID: process.env.KAKAO_REST_API_KEY,                  // ← 환경변수에서 REST API 키를 가져오도록 수정
+    clientSecret: process.env.KAKAO_CLIENT_SECRET,
     callbackURL: "https://miraclepet.kr/auth/kakao/callback"
   }, async (accessToken, refreshToken, profile, done) => {
     try {
