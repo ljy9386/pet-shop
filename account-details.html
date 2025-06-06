@@ -93,118 +93,171 @@
         </a>
     </header>
 
-    <div class="container">
-        <h2>마이페이지</h2>
-        <div class="card">
-            <div class="info-group"><label>아이디</label><span id="user-id"></span></div>
-            <div class="info-group"><label>이름</label><span id="user-name"></span></div>
-            <div class="info-group"><label>우편번호</label><span id="user-postal"></span></div>
-            <div class="info-group"><label>주소</label><span id="user-address"></span></div>
-            <div class="info-group"><label>전화번호</label><span id="user-phone"></span></div>
-            <div class="info-group"><label>반려동물 이름</label><span id="user-pet-name"></span></div>
-            <div class="info-group"><label>반려동물 종/품종</label><span id="user-pet-breed"></span></div>
-            <div class="info-group"><label>반려동물 생년월일</label><span id="user-pet-birth"></span></div>
+  <div class="container">
+    <h2>마이페이지</h2>
+    <div class="card">
+      <!-- 아이디는 span으로 보여주기 -->
+      <div class="info-group">
+        <label>아이디</label>
+        <span id="user-id"></span>
+      </div>
 
+      <!-- 이름·전화번호·주소 입력 폼 -->
+      <form id="accountForm">
+        <div class="info-group">
+          <label for="name">이름</label>
+          <input id="name" name="name" type="text" required />
         </div>
-
-        <h3>서비스 현황</h3>
-        <div class="card" id="funeral-status">
-            <p>신청한 서비스가 없습니다.</p>
+        <div class="info-group">
+          <label for="phone">전화번호</label>
+          <input id="phone" name="phone" type="text" required />
         </div>
-
-        <h3>주문내역</h3>
-        <div class="card" id="order-history">
-            <p>주문 내역이 없습니다.</p>
+        <div class="info-group">
+          <label for="address">주소</label>
+          <input id="address" name="address" type="text" required />
         </div>
+        <button type="submit" class="btn">저장</button>
+      </form>
 
-        <h3>회원정보 수정</h3>
-        <button class="btn" onclick="location.href='edit-profile.html'">회원정보 수정하기</button>
-
-        <h3>계정 관리</h3>
-        <button class="btn" onclick="logout()">로그아웃</button>
-        <button class="btn danger" onclick="deleteAccount()">회원탈퇴</button>
-
+      <!-- 반려동물 정보 보여주기 -->
+      <div class="info-group">
+        <label>반려동물 이름</label>
+        <span id="user-pet-name"></span>
+      </div>
+      <div class="info-group">
+        <label>반려동물 종/품종</label>
+        <span id="user-pet-breed"></span>
+      </div>
+      <div class="info-group">
+        <label>반려동물 생년월일</label>
+        <span id="user-pet-birth"></span>
+      </div>
     </div>
 
-    <script>
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            alert("로그인이 필요합니다.");
-            location.href = "login.html";
+    <h3>서비스 현황</h3>
+    <div class="card" id="funeral-status">
+      <p>신청한 서비스가 없습니다.</p>
+    </div>
+
+    <h3>주문내역</h3>
+    <div class="card" id="order-history">
+      <p>주문 내역이 없습니다.</p>
+    </div>
+
+    <h3>회원정보 수정</h3>
+    <button class="btn" onclick="location.href='edit-profile.html'">회원정보 수정하기</button>
+
+    <h3>계정 관리</h3>
+    <button class="btn" onclick="logout()">로그아웃</button>
+    <button class="btn danger" onclick="deleteAccount()">회원탈퇴</button>
+  </div>
+
+  <script>
+    // 로컬스토리지에서 user 정보 가져오기
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (!user.user_id) {
+      alert("로그인이 필요합니다.");
+      location.href = "login.html";
+    }
+
+    // 화면에 기본 정보 반영
+    document.getElementById("user-id").textContent = user.user_id || "";
+    document.getElementById("user-pet-name").textContent = user.pet?.name || "";
+    document.getElementById("user-pet-breed").textContent = user.pet?.breed || "";
+    document.getElementById("user-pet-birth").textContent = user.pet?.birth || "";
+
+    function logout() {
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      alert("로그아웃 되었습니다.");
+      location.href = "index.html";
+    }
+
+    function deleteAccount() {
+      const confirmed = confirm("정말로 회원탈퇴 하시겠습니까? 모든 정보가 삭제됩니다.");
+      if (!confirmed) return;
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      alert("회원탈퇴가 완료되었습니다.");
+      location.href = "index.html";
+    }
+  </script>
+
+  <script>
+    // 주문내역 로컬스토리지에서 가져와 표시
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const orderContainer = document.getElementById("order-history");
+    if (orders.length > 0) {
+      orderContainer.innerHTML = orders.map(order => `
+        <div style="margin-bottom: 12px;">
+          <strong>주문번호:</strong> ${order.id}<br>
+          <strong>상품:</strong> ${order.item}<br>
+          <strong>금액:</strong> ${order.amount}원<br>
+          <strong>주문일:</strong> ${order.date}
+        </div>
+      `).join('');
+    }
+  </script>
+
+  <script>
+    // 서비스 현황 API 호출
+    fetch(`https://miraclepet.kr/api/payment/user/${user.user_id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.length) {
+          document.getElementById("funeral-status").innerHTML = "<p>신청한 서비스가 없습니다.</p>";
+          return;
         }
+        const payment = data[0];
+        document.getElementById("funeral-status").innerHTML = `
+          <p><strong>가입 서비스:</strong> ${payment.serviceType}</p>
+          <p><strong>월 납입액:</strong> ${payment.monthly}</p>
+          <p><strong>납입 기간:</strong> ${payment.duration}</p>
+          <p><strong>총액:</strong> ${payment.totalAmount}원</p>
+          <p><strong>시작일:</strong> ${new Date(payment.paidAt).toISOString().slice(0, 10)}</p>
+        `;
+      })
+      .catch(err => {
+        console.error("서비스 조회 오류:", err);
+        document.getElementById("funeral-status").innerHTML = "<p>서비스 정보를 불러오지 못했습니다.</p>";
+      });
+  </script>
 
-        // 사용자 정보 반영
-        document.getElementById("user-id").textContent = user.user_id || "";
-        document.getElementById("user-name").textContent = user.name || "";
-        document.getElementById("user-postal").textContent = user.postalCode || "";
-        document.getElementById("user-address").textContent = user.address || "";
-        document.getElementById("user-phone").textContent = user.phone || "";
+  <script>
+    // accountForm 제출 처리
+    document.getElementById("accountForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
 
-        // 반려동물 정보 반영
-        document.getElementById("user-pet-name").textContent = user.pet?.name || "";
-        document.getElementById("user-pet-breed").textContent = user.pet?.breed || "";
-        document.getElementById("user-pet-birth").textContent = user.pet?.birth || "";
+      if (!name || !phone || !address) {
+        alert("모든 항목을 입력하세요.");
+        return;
+      }
 
-        function logout() {
-            localStorage.removeItem("user");
-            sessionStorage.removeItem("user");
-            alert("로그아웃 되었습니다.");
-            location.href = "index.html";
-        }
+      // 백엔드 API 호출 (/api/account/update)
+      await fetch("/api/account/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.user_id, name, phone, address })
+      });
 
-        function deleteAccount() {
-            const confirmed = confirm("정말로 회원탈퇴 하시겠습니까? 모든 정보가 삭제됩니다.");
-            if (!confirmed) return;
+      // 로컬스토리지 업데이트
+      user.name = name;
+      user.phone = phone;
+      user.address = address;
+      localStorage.setItem("user", JSON.stringify(user));
 
-            localStorage.removeItem("user");
-            sessionStorage.removeItem("user");
+      alert("회원 정보가 저장되었습니다.");
+      window.location.reload();
+    });
 
-            alert("회원탈퇴가 완료되었습니다.");
-            location.href = "index.html";
-        }
-    </script>
-
-
-    <script>
-        const orders = JSON.parse(localStorage.getItem("orders")) || [];
-
-        const orderContainer = document.getElementById("order-history");
-        if (orders.length > 0) {
-            orderContainer.innerHTML = orders.map(order => `
-            <div style="margin-bottom: 12px;">
-                <strong>주문번호:</strong> ${order.id}<br>
-                <strong>상품:</strong> ${order.item}<br>
-                <strong>금액:</strong> ${order.amount}원<br>
-                <strong>주문일:</strong> ${order.date}
-            </div>
-        `).join('');
-        }
-    </script>
-
-    <script>
-        // 이미 위에 user 선언됨 → 그대로 재사용
-        fetch(`https://miraclepet.kr/api/payment/user/${user.user_id}`)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.length) {
-                    document.getElementById("funeral-status").innerHTML = "<p>신청한 서비스가 없습니다.</p>";
-                    return;
-                }
-
-                const payment = data[0];
-                document.getElementById("funeral-status").innerHTML = `
-        <p><strong>가입 서비스:</strong> ${payment.serviceType}</p>
-        <p><strong>월 납입액:</strong> ${payment.monthly}</p>
-        <p><strong>납입 기간:</strong> ${payment.duration}</p>
-        <p><strong>총액:</strong> ${payment.totalAmount}원</p>
-        <p><strong>시작일:</strong> ${new Date(payment.paidAt).toISOString().slice(0, 10)}</p>
-      `;
-            })
-            .catch(err => {
-                console.error("서비스 조회 오류:", err);
-                document.getElementById("funeral-status").innerHTML = "<p>서비스 정보를 불러오지 못했습니다.</p>";
-            });
-    </script>
+    // 입력 폼 초기값 설정
+    document.getElementById("name").value = user.name || "";
+    document.getElementById("phone").value = user.phone || "";
+    document.getElementById("address").value = user.address || "";
+  </script>
 </body>
 
 </html>
