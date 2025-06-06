@@ -51,7 +51,7 @@
 
     .right input[type="text"],
     .right input[type="password"] {
-      width: 93%;
+      width: 100%;
       padding: 18px;
       border-radius: 12px;
       border: none;
@@ -244,11 +244,56 @@
     });
 
     // ✅ 카카오 간편 로그인 팝업 방식
- document.getElementById("kakao-login-btn").addEventListener("click", function() {
-    // 카카오 OAuth는 백엔드 Passport가 처리하므로 단순 redirect
-    window.location.href = "/auth/kakao";
-  });
-</script>
+    document.getElementById("kakao-login-btn").addEventListener("click", function () {
+      Kakao.Auth.login({
+        scope: "profile_nickname",
+        success: function (authObj) {
+          Kakao.API.request({
+            url: "/v2/user/me",
+            success: function (res) {
+              const userId = `kakao_${res.id}`;
+              const userData = {
+                user_id: userId,
+                email: res.kakao_account?.email || "",
+                nickname: res.kakao_account?.profile?.nickname || ""
+              };
+              fetch("https://miraclepet.kr/api/social-signup", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(userData)
+              });
+              fetch(`https://miraclepet.kr/api/user/check/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                  localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
+                  if (data.exists) {
+                    // 이미 가입된 사용자 → 바로 메인페이지
+                    window.location.href = "index.html";
+                  } else {
+                    // 신규 사용자 → 추가 정보 입력
+                    window.location.href = "social-signup.html";
+                  }
+                })
+                .catch(error => {
+                  alert("유저 확인 중 오류");
+                  console.error(error);
+                });
+            },
+            fail: function (error) {
+              alert("유저 정보 가져오기 실패");
+              console.error(error);
+            }
+          });
+        },
+        fail: function (err) {
+          alert("카카오 로그인 실패");
+          console.error(err);
+        }
+      });
+    });
+  </script>
 
 </body>
 
