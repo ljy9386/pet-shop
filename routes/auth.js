@@ -12,7 +12,7 @@ router.post('/signup', async (req, res) => {
   console.log('📦 요청받은 데이터:', req.body);
 
   try {
-    const { user_id, name, email, password, postalCode, address, phone } = req.body;
+    const { user_id, name, email, password, postalCode, address, phone, pet } = req.body;
 
     if (!user_id || !name || !email || !password || !postalCode || !address || !phone) {
       return res.status(400).json({ message: '모든 항목을 입력해주세요.' });
@@ -40,6 +40,7 @@ router.post('/signup', async (req, res) => {
       postalCode,
       address,
       phone,
+      pet
     });
 
     await newUser.save();
@@ -56,12 +57,14 @@ router.post('/signup', async (req, res) => {
 // routes/auth.js 로그인정보 라우터
 
 router.post('/login', async (req, res) => {
+  console.log(req.body);
   const { user_id, password } = req.body;
   console.log('📥 로그인 시도:', user_id);
 
   let user;
 
   try {
+    const { user_id, password } = req.body;
     user = await User.findOne({ user_id });
     console.log("💡 찾은 유저:", user);
     if (!user) {
@@ -93,7 +96,8 @@ router.post('/login', async (req, res) => {
         postalCode: user.postalCode,
         address: user.address,
         phone: user.phone,
-        admin: user.admin
+        admin: user.admin,
+        pet: user.pet
       }
     });
   } catch (err) {
@@ -131,14 +135,20 @@ router.post('/user/update', async (req, res) => {
 // 카카오 로그인 진입
 router.get('/kakao', passport.authenticate('kakao'));
 
-// 로그인 성공 후 콜백
+// 카카오 로그인 콜백
 router.get('/kakao/callback',
   passport.authenticate('kakao', {
     failureRedirect: '/login.html',
   }),
   (req, res) => {
-    // 로그인 성공 후 메인 페이지로 이동
-    res.redirect('/');
+    const user = req.user;
+    console.log('카카오 콜백 진입, user:', user);
+    res.send(`
+      <script>
+        localStorage.setItem("user", ${JSON.stringify(JSON.stringify(user))});
+        window.location.href = "/index.html";
+      </script>
+    `);
   }
 );
 
@@ -153,51 +163,13 @@ router.get('/naver/callback',
   }),
   async (req, res) => {
     const user = req.user;
-    console.log("✅ NAVER USER:", user);
-
-    // ✅ 세션 저장
-    req.logIn(user, async (err) => {
-      if (err) {
-        console.error("❌ 세션 저장 실패:", err);
-        return res.redirect('/login');
-      }
-
-      // ✅ DB 확인
-      const existingUser = await User.findOne({ user_id: user.user_id });
-
-      if (!existingUser) {
-        // 신규 유저: 추가정보 입력용 세션 저장
-        req.session.tempUser = user;
-
-        // ✅ 팝업 안에서 메인창 이동 + 팝업 닫기
-        return res.send(`
-          <script>
-            if (window.opener) {
-              window.opener.location.href = "/social-signup.html";
-              window.close();
-            } else {
-              window.location.href = "/social-signup.html";
-            }
-          </script>
-        `);
-      }
-
-      // 기존 회원: 바로 메인으로 이동
-      return res.send(`
-  <script>
-    const user = ${JSON.stringify(user)};
-    localStorage.setItem("user", JSON.stringify(user));
-
-    if (window.opener) {
-      window.opener.location.href = "/index.html";
-      window.close();
-    } else {
-      window.location.href = "/index.html";
-    }
-  </script>
-`);
-
-    });
+    console.log('네이버 콜백 진입, user:', user);
+    res.send(`
+      <script>
+        localStorage.setItem("user", ${JSON.stringify(JSON.stringify(user))});
+        window.location.href = "/index.html";
+      </script>
+    `);
   }
 );
 
@@ -212,49 +184,45 @@ router.get('/google/callback',
   }),
   async (req, res) => {
     const user = req.user;
-    console.log("✅ GOOGLE USER:", user);
-
-    req.logIn(user, async (err) => {
-      if (err) {
-        console.error("❌ 구글 세션 저장 실패:", err);
-        return res.redirect('/login');
-      }
-
-      const existingUser = await User.findOne({ user_id: user.user_id });
-
-      if (!existingUser) {
-        req.session.tempUser = user;
-        return res.send(`
-          <script>
-            if (window.opener) {
-              window.opener.location.href = "/social-signup.html";
-              window.close();
-            } else {
-              window.location.href = "/social-signup.html";
-            }
-          </script>
-        `);
-      }
-
- return res.send(`
-  <script>
-    const user = ${JSON.stringify(user)};
-    localStorage.setItem("user", JSON.stringify(user));
-
-    if (window.opener) {
-      window.opener.localStorage.setItem("user", JSON.stringify(user));
-      window.opener.location.href = "/index.html";
-      window.close();
-    } else {
-      window.location.href = "/index.html";
-    }
-  </script>
-`);
-
-    });
+    console.log('구글 콜백 진입, user:', user);
+    res.send(`
+      <script>
+        localStorage.setItem("user", ${JSON.stringify(JSON.stringify(user))});
+        window.location.href = "/index.html";
+      </script>
+    `);
   }
 );
 
+router.post('/social-signup', async (req, res) => {
+  try {
+    const { user_id, name, email, nickname, postalCode, address, phone, pet } = req.body;
 
+    // 이미 가입된 유저 체크
+    const existingUser = await User.findOne({ user_id });
+    if (existingUser) {
+      return res.status(400).json({ message: '이미 가입된 유저입니다.' });
+    }
+
+    // 소셜 로그인은 비밀번호 없이 가입 처리
+    const newUser = new User({
+      user_id,
+      name,
+      email,
+      nickname,
+      postalCode,
+      address,
+      phone,
+      pet,
+      password: '', // 소셜 로그인은 비밀번호 없이 가입
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: '소셜 회원가입 성공!' });
+  } catch (err) {
+    console.error('❌ 소셜 회원가입 에러:', err.message);
+    res.status(500).json({ message: '서버 오류', error: err.message });
+  }
+});
 
 module.exports = router;

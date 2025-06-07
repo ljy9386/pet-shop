@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User"); // 사용자 모델
+const passport = require("passport");
 
 // 소셜 가입 처리
 router.post("/social-signup", async (req, res) => {
   try {
     console.log("🔥 받은 데이터:", req.body);
     const {
+      user_id,
       name,
       postalCode,
       address,
@@ -14,19 +16,13 @@ router.post("/social-signup", async (req, res) => {
       pet
     } = req.body;
 
-    if (!name || !phone || !pet?.name || !pet?.breed) {
+    if (!user_id || !name || !phone || !pet?.name || !pet?.breed) {
       return res.status(400).json({ message: "필수 항목 누락" });
     }
 
-    const timestamp = Date.now();
-    if (!timestamp) {
-      console.log("❗ timestamp null 에러 발생");
-      return res.status(500).json({ message: "타임스탬프 오류" });
-    }
-
     const newUser = new User({
-      user_id: `social_${timestamp}`,
-      password: `socialpass_${timestamp}`,
+      user_id,
+      password: '',
       name,
       postalCode,
       address,
@@ -91,5 +87,69 @@ router.post("/social-update", async (req, res) => {
   }
 });
 
+// 소셜 유저 존재 여부 확인 API
+router.get("/social-user-exists/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  const user = await User.findOne({ user_id });
+  if (user) {
+    console.log(`✅ 유저 있음: ${user_id}`);
+  } else {
+    console.log(`❌ 유저 없음: ${user_id}`);
+  }
+  res.json({ exists: !!user });
+});
+
+// 예시: 구글/카카오/네이버 콜백
+router.get('/kakao/callback',
+  passport.authenticate('kakao', { failureRedirect: '/login.html' }),
+  async (req, res) => {
+    const user = req.user;
+    // user 정보를 localStorage에 저장하고 메인으로 이동
+    res.send(`
+      <script>
+        localStorage.setItem("user", ${JSON.stringify(JSON.stringify(user))});
+        window.location.href = "/index.html";
+      </script>
+    `);
+  }
+);
+
+// 네이버 콜백
+router.get('/naver/callback',
+  passport.authenticate('naver', { failureRedirect: '/login', session: true }),
+  async (req, res) => {
+    const user = req.user;
+    res.send(`
+      <script>
+        localStorage.setItem("user", ${JSON.stringify(JSON.stringify(user))});
+        window.location.href = "/index.html";
+      </script>
+    `);
+  }
+);
+
+// 구글 콜백
+router.get('/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login', session: true }),
+  async (req, res) => {
+    const user = req.user;
+    res.send(`
+      <script>
+        localStorage.setItem("user", ${JSON.stringify(JSON.stringify(user))});
+        window.location.href = "/index.html";
+      </script>
+    `);
+  }
+);
+
+// user_id로 유저 정보 반환 API
+router.get('/user/get/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+  const user = await User.findOne({ user_id });
+  if (!user) {
+    return res.status(404).json({ message: '유저 없음' });
+  }
+  res.json(user);
+});
 
 module.exports = router;
