@@ -27,6 +27,9 @@ router.post("/social-signup", async (req, res) => {
       postalCode,
       address,
       phone,
+      provider: user_id.startsWith('kakao_') ? 'kakao' : 
+                user_id.startsWith('google_') ? 'google' : 
+                user_id.startsWith('naver_') ? 'naver' : 'local',
       pet: {
         name: pet.name,
         breed: pet.breed,
