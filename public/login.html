@@ -361,42 +361,44 @@
     // 소셜 로그인 버튼 클릭 이벤트
     document.getElementById("kakao-login").addEventListener("click", async () => {
       try {
-        const response = await fetch("https://miraclepet.kr/api/auth/kakao");
+        console.log("🔑 카카오 로그인 버튼 클릭");
+        const response = await fetch("https://miraclepet.kr/api/social/kakao");
         const data = await response.json();
+        console.log("📥 카카오 로그인 응답:", data);
+        
         if (data.url) {
+          console.log("🔄 카카오 로그인 페이지로 이동:", data.url);
           window.location.href = data.url;
+        } else {
+          throw new Error("카카오 로그인 URL을 받지 못했습니다.");
         }
       } catch (err) {
-        console.error("카카오 로그인 에러:", err);
+        console.error("❌ 카카오 로그인 에러:", err);
         document.getElementById("error-message").textContent = "카카오 로그인 처리 중 오류가 발생했습니다.";
-      }
-    });
-
-    document.getElementById("google-login").addEventListener("click", async () => {
-      try {
-        const response = await fetch("https://miraclepet.kr/api/auth/google");
-        const data = await response.json();
-        if (data.url) {
-          window.location.href = data.url;
-        }
-      } catch (err) {
-        console.error("구글 로그인 에러:", err);
-        document.getElementById("error-message").textContent = "구글 로그인 처리 중 오류가 발생했습니다.";
       }
     });
 
     // URL 파라미터에서 소셜 로그인 데이터 확인
     window.addEventListener('load', () => {
+      console.log("📥 페이지 로드");
       const urlParams = new URLSearchParams(window.location.search);
       const userData = urlParams.get('userData');
+      const error = urlParams.get('error');
+      
+      if (error) {
+        console.error("❌ 에러 발생:", error);
+        document.getElementById("error-message").textContent = error;
+        return;
+      }
       
       if (userData) {
         try {
+          console.log("📥 소셜 로그인 데이터 수신:", userData);
           const parsedUserData = JSON.parse(decodeURIComponent(userData));
-          console.log("📥 소셜 로그인 데이터 수신:", parsedUserData);
+          console.log("✅ 파싱된 사용자 데이터:", parsedUserData);
           handleSocialLogin(parsedUserData);
         } catch (err) {
-          console.error("소셜 로그인 데이터 파싱 에러:", err);
+          console.error("❌ 소셜 로그인 데이터 파싱 에러:", err);
           document.getElementById("error-message").textContent = "소셜 로그인 데이터 처리 중 오류가 발생했습니다.";
         }
       }

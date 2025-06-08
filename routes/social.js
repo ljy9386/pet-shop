@@ -112,10 +112,24 @@ router.get("/social-user-exists/:user_id", async (req, res) => {
   res.json({ exists: !!user });
 });
 
+// 카카오 로그인
+router.get("/kakao", async (req, res) => {
+  try {
+    console.log("🔑 카카오 로그인 시작");
+    const redirectUri = "https://miraclepet.kr/api/social/kakao/callback";
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`;
+    console.log("🔗 카카오 인증 URL:", kakaoAuthUrl);
+    res.json({ url: kakaoAuthUrl });
+  } catch (err) {
+    console.error("❌ 카카오 로그인 에러:", err);
+    res.status(500).json({ message: "카카오 로그인 처리 중 오류가 발생했습니다." });
+  }
+});
+
 // 카카오 로그인 콜백
 router.get("/kakao/callback", async (req, res) => {
   try {
-    console.log("📥 카카오 콜백 수신");
+    console.log("📥 카카오 콜백 수신:", req.query);
     const { code } = req.query;
     if (!code) {
       console.log("❌ 인증 코드 누락");
@@ -166,8 +180,29 @@ router.get("/kakao/callback", async (req, res) => {
       user = await User.create(userData);
     }
 
+    console.log("👤 최종 사용자 정보:", user);
+
+    // 세션에 사용자 정보 저장
+    req.session.user = {
+      user_id: user.user_id,
+      name: user.name,
+      provider: user.provider,
+      isLoggedIn: true
+    };
+    req.session.isLoggedIn = true;
+
+    // 세션 저장
+    req.session.save((err) => {
+      if (err) {
+        console.error("❌ 세션 저장 실패:", err);
+        return res.redirect("/login?error=세션 저장 실패");
+      }
+      console.log("✅ 세션 저장 성공:", req.session);
+    });
+
     // 로그인 페이지로 리다이렉트
     const encodedUserData = encodeURIComponent(JSON.stringify(userData));
+    console.log("🔄 로그인 페이지로 리다이렉트:", `/login?userData=${encodedUserData}`);
     res.redirect(`/login?userData=${encodedUserData}`);
   } catch (err) {
     console.error("❌ 카카오 콜백 에러:", err);
