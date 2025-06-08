@@ -170,6 +170,12 @@
       }
 
       const baseUser = JSON.parse(localStorage.getItem("pendingSocialUser") || "{}");
+      console.log("📦 저장된 소셜 유저 정보:", baseUser);
+
+      if (!baseUser.user_id) {
+        errorMessage.textContent = "소셜 로그인 정보가 없습니다. 다시 로그인해주세요.";
+        return;
+      }
 
       const userData = {
         ...baseUser,
@@ -184,26 +190,29 @@
         }
       };
 
+      console.log("📤 전송할 데이터:", userData);
+
       try {
-        const res = await fetch("https://miraclepet.kr/api/social-signup", {
+        const res = await fetch("/api/social-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(userData)
         });
 
         const data = await res.json();
+        console.log("📥 서버 응답:", data);
+
         if (!res.ok) {
-          const errorMessage = document.getElementById("error-message");
           errorMessage.textContent = data.message || "회원가입 실패";
           return;
         }
+
         // ✅ 로그인 유지
         localStorage.setItem("user", JSON.stringify(userData));
         alert("회원가입 완료!");
         location.href = "index.html";
       } catch (err) {
-        console.error(err);
-        const errorMessage = document.getElementById("error-message");
+        console.error("❌ 서버 오류:", err);
         errorMessage.textContent = "서버 오류가 발생했습니다.";
       }
     });

@@ -191,7 +191,7 @@
 
 
           <!-- 구글 -->
-          <a href="/auth/google" style="background-color: #ffffff; color: #000; border-radius: 8px; padding: 12px 20px;
+          <a href="/auth/google" onclick="handleGoogleLogin(event)" style="background-color: #ffffff; color: #000; border-radius: 8px; padding: 12px 20px;
             font-size: 14px; font-weight: bold; text-decoration: none; border: 1px solid #ccc;">
             <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
               style="width:18px; vertical-align: middle; margin-right: 8px;">
@@ -305,6 +305,63 @@
           alert("카카오 로그인에 실패했습니다.");
         }
       });
+    });
+
+    // 구글 로그인 처리
+    function handleGoogleLogin(event) {
+      event.preventDefault();
+      const width = 500;
+      const height = 600;
+      const left = (window.innerWidth - width) / 2;
+      const top = (window.innerHeight - height) / 2;
+      
+      window.open(
+        "/auth/google",
+        "googleLogin",
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+    }
+
+    // 구글 로그인 콜백 처리
+    window.addEventListener('message', function(event) {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'google-login') {
+        const userData = event.data.user;
+        console.log("📦 구글 로그인 데이터:", userData);
+        
+        // 기존 사용자 확인
+        fetch(`/auth/check-user/${userData.user_id}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.exists) {
+              // 기존 사용자: 로그인 처리
+              return fetch("/auth/social-login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ user_id: userData.user_id })
+              });
+            } else {
+              // 신규 사용자: 추가 정보 입력 페이지로 이동
+              localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
+              window.location.href = "social-signup.html";
+            }
+          })
+          .then(response => response?.json())
+          .then(loginData => {
+            if (loginData?.user) {
+              localStorage.setItem("user", JSON.stringify(loginData.user));
+              sessionStorage.setItem("user", JSON.stringify(loginData.user));
+              window.location.href = "index.html";
+            }
+          })
+          .catch(error => {
+            console.error("로그인 처리 중 오류:", error);
+            alert("로그인 처리 중 오류가 발생했습니다.");
+          });
+      }
     });
   </script>
 

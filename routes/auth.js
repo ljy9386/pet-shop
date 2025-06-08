@@ -232,7 +232,10 @@ router.get('/google/callback',
         return res.send(`
           <script>
             if (window.opener) {
-              window.opener.location.href = "/social-signup.html";
+              window.opener.postMessage({
+                type: 'google-login',
+                user: ${JSON.stringify(user)}
+              }, window.location.origin);
               window.close();
             } else {
               window.location.href = "/social-signup.html";
@@ -241,21 +244,19 @@ router.get('/google/callback',
         `);
       }
 
- return res.send(`
-  <script>
-    const user = ${JSON.stringify(user)};
-    localStorage.setItem("user", JSON.stringify(user));
-
-    if (window.opener) {
-      window.opener.localStorage.setItem("user", JSON.stringify(user));
-      window.opener.location.href = "/index.html";
-      window.close();
-    } else {
-      window.location.href = "/index.html";
-    }
-  </script>
-`);
-
+      return res.send(`
+        <script>
+          if (window.opener) {
+            window.opener.postMessage({
+              type: 'google-login',
+              user: ${JSON.stringify(user)}
+            }, window.location.origin);
+            window.close();
+          } else {
+            window.location.href = "/index.html";
+          }
+        </script>
+      `);
     });
   }
 );
