@@ -129,9 +129,6 @@
       <label for="username">이름*</label>
       <input type="text" id="username" name="name" placeholder="Your name" required />
 
-      <label for="email">이메일*</label>
-      <input type="email" id="email" name="email" placeholder="Your email" required style="margin-bottom: 10px;" />
-
       <label>우편주소</label>
       <div class="postal-group">
         <input type="text" id="postcode" name="postalCode" placeholder="우편번호" readonly />
@@ -208,50 +205,28 @@
         const phone = Array.from(phoneInputs)
           .map((input) => input.value.trim())
           .join("-");
-        const petName = document.getElementById("pet-name").value.trim();
-        const petBreed = document.getElementById("pet-breed").value.trim();
-        const petBirth = document.getElementById("pet-birth").value;
-
-        if (!user_id) {
-          errorMessage.textContent = "아이디를 입력해주세요.";
-          return;
-        }
 
         if (password.value !== confirmPassword.value) {
           errorMessage.textContent = "비밀번호가 일치하지 않습니다.";
           return;
         }
 
-        if (!user_id || !name || !email || !password.value || !postalCode || !address || !phone || !petName || !petBreed) {
+        if (!user_id || !name || !email || !password.value || !postalCode || !address || !phone) {
           errorMessage.textContent = "모든 항목을 입력해주세요.";
           return;
         }
 
-        console.log("회원가입 요청 데이터:", { user_id, name, email, password: password.value, postalCode, address, phone, pet: { name: petName, breed: petBreed, birth: petBirth } });
+        console.log("회원가입 요청 데이터:", { user_id, name, email, password: password.value, postalCode, address, phone });
 
         try {
-          const res = await fetch("https://miraclepet.kr/auth/signup", {
+          const res = await fetch("/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id,
-              name,
-              email,
-              password: password.value,
-              postalCode,
-              address,
-              phone,
-              pet: {
-                name: petName,
-                breed: petBreed,
-                birth: petBirth
-              }
-            }),
+            body: JSON.stringify({ user_id, name, email, password: password.value, postalCode, address, phone }),
           });
 
           const data = await res.json();
-          console.log("서버 응답:", data);
-          console.log("서버 응답:", 111111111111);
+          console.log("서버 응답:", data); // 응답 디버깅
 
           if (!res.ok) {
             errorMessage.textContent = data.message || "회원가입 실패";
