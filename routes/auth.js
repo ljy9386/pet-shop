@@ -229,16 +229,16 @@ router.post('/social-login', async (req, res) => {
       provider: user.provider,
       isLoggedIn: true
     };
-    console.log("💾 세션에 저장할 사용자 정보:", sessionUser);
+
+    // 세션 설정
     req.session.user = sessionUser;
-    
-    // 세션 저장 확인
+    req.session.isLoggedIn = true;
     req.session.save((err) => {
       if (err) {
         console.error("❌ 세션 저장 실패:", err);
         return res.status(500).json({ message: '세션 저장 실패' });
       }
-      console.log("✅ 세션 저장 성공");
+      console.log("✅ 세션 저장 성공:", req.session);
     });
 
     // 클라이언트에 전달할 사용자 정보
@@ -254,13 +254,36 @@ router.post('/social-login', async (req, res) => {
       pet: user.pet,
       isLoggedIn: true
     };
+
+    // 응답 설정
+    res.cookie('isLoggedIn', 'true', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 24시간
+    });
+
+    res.cookie('userId', user.user_id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 24시간
+    });
+
     console.log("📤 클라이언트에 전달할 사용자 정보:", userData);
+    console.log("🍪 설정된 쿠키:", res.getHeaders()['set-cookie']);
 
     res.json({ 
       message: '로그인 성공',
-      user: userData
+      user: userData,
+      sessionId: req.session.id
     });
-    console.log("✅ 소셜 로그인 성공:", user_id);
+    
+    console.log("✅ 소셜 로그인 성공:", {
+      userId: user.user_id,
+      sessionId: req.session.id,
+      cookies: res.getHeaders()['set-cookie']
+    });
   } catch (err) {
     console.error('❌ 소셜 로그인 에러:', {
       message: err.message,
