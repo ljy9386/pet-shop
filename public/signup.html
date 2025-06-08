@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -131,7 +130,7 @@
       <input type="text" id="username" name="name" placeholder="Your name" required />
 
       <label for="email">이메일*</label>
-      <input type="email" id="email" name="email" placeholder="Your email" required style="margin-bottom: 10px;" />
+      <input type="email" id="email" name="email" placeholder="Your email" required />
 
       <label>우편주소</label>
       <div class="postal-group">
@@ -149,17 +148,15 @@
         <input type="text" maxlength="4" name="phone" placeholder="*" />
         <input type="text" maxlength="4" name="phone" placeholder="*" />
       </div>
-      <!-- 구분선 -->
-      <hr style="margin: 40px 0; border: none; border-top: 5px solid #888;" />
 
       <!-- 반려동물 정보 입력 -->
       <div class="form-group">
-        <label for="pet-name">반려동물 이름</label>
+        <label for="pet-name">반려동물 이름*</label>
         <input type="text" id="pet-name" name="pet-name" placeholder="반려동물 이름" required />
       </div>
 
       <div class="form-group">
-        <label for="pet-breed">반려동물 종/품종</label>
+        <label for="pet-breed">반려동물 종/품종*</label>
         <input type="text" id="pet-breed" name="pet-breed" placeholder="예: 말티즈, 진돗개 등" required />
       </div>
 
@@ -219,14 +216,14 @@
         }
 
         if (!user_id || !name || !email || !password.value || !postalCode || !address || !phone || !petName || !petBreed) {
-          errorMessage.textContent = "모든 항목을 입력해주세요.";
+          errorMessage.textContent = "모든 필수 항목을 입력해주세요.";
           return;
         }
 
         console.log("회원가입 요청 데이터:", { user_id, name, email, password: password.value, postalCode, address, phone, pet: { name: petName, breed: petBreed, birth: petBirth } });
 
         try {
-          const res = await fetch("https://miraclepet.kr/auth/signup", {
+          const res = await fetch("/auth/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -246,7 +243,7 @@
           });
 
           const data = await res.json();
-          console.log("서버 응답:", data); // 응답 디버깅
+          console.log("서버 응답:", data);
 
           if (!res.ok) {
             errorMessage.textContent = data.message || "회원가입 실패";

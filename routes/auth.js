@@ -12,10 +12,10 @@ router.post('/signup', async (req, res) => {
   console.log('📦 요청받은 데이터:', req.body);
 
   try {
-    const { user_id, name, email, password, postalCode, address, phone } = req.body;
+    const { user_id, name, email, password, postalCode, address, phone, pet } = req.body;
 
-    if (!user_id || !name || !email || !password || !postalCode || !address || !phone) {
-      return res.status(400).json({ message: '모든 항목을 입력해주세요.' });
+    if (!user_id || !name || !email || !password || !postalCode || !address || !phone || !pet?.name || !pet?.breed) {
+      return res.status(400).json({ message: '모든 필수 항목을 입력해주세요.' });
     }
 
     const existingEmail = await User.findOne({ email });
@@ -40,6 +40,11 @@ router.post('/signup', async (req, res) => {
       postalCode,
       address,
       phone,
+      pet: {
+        name: pet.name,
+        breed: pet.breed,
+        birth: pet.birth
+      }
     });
 
     await newUser.save();
@@ -47,7 +52,7 @@ router.post('/signup', async (req, res) => {
     res.status(201).json({ message: '회원가입 성공!' });
 
   } catch (err) {
-    console.error('❌ 회원가입 에러:', err.message); // 🔥 에러 메시지만 추출
+    console.error('❌ 회원가입 에러:', err.message);
     res.status(500).json({ message: '서버 오류', error: err.message });
   }
 });
