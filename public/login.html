@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -145,35 +146,8 @@
     }
   </style>
   <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
     Kakao.init("8d1e498a62aff21a7911157887c39e4d"); // 너의 자바스크립트 키
-    
-    // 네이버 SDK 초기화
-    const naverLogin = new naver.LoginWithNaverId({
-      clientId: "YOUR_NAVER_CLIENT_ID",
-      callbackUrl: window.location.origin + "/auth/naver/callback",
-      isPopup: true,
-      callbackHandle: true
-    });
-    naverLogin.init();
-
-    // 구글 SDK 초기화
-    function initGoogle() {
-      google.accounts.id.initialize({
-        client_id: '1094796511380-2vqj8vqj8vqj8vqj8vqj8vqj8vqj8vqj.apps.googleusercontent.com',
-        callback: handleGoogleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-        context: 'signin',
-        ux_mode: 'popup',
-        flow: 'implicit',
-        prompt_parent_id: 'google-login-btn',
-        itp_support: true,
-        use_fedcm_for_prompt: true
-      });
-    }
   </script>
 </head>
 
@@ -210,14 +184,15 @@
           </button>
 
           <!-- 네이버 -->
-          <a id="naver-login-btn" style="background-color: #03C75A; color: #fff; border-radius: 8px; padding: 12px 20px; 
+          <a href="/auth/naver" style="background-color: #03C75A; color: #fff; border-radius: 8px; padding: 12px 20px; 
             font-size: 14px; font-weight: bold; text-decoration: none; border: none;">
             <img src="/img/naver.png" alt="Naver" style="height:18px; vertical-align: middle; margin-right: 8px;">
             네이버로 간편 로그인
           </a>
 
+
           <!-- 구글 -->
-          <a id="google-login-btn" style="background-color: #ffffff; color: #000; border-radius: 8px; padding: 12px 20px;
+          <a href="/auth/google" style="background-color: #ffffff; color: #000; border-radius: 8px; padding: 12px 20px;
             font-size: 14px; font-weight: bold; text-decoration: none; border: 1px solid #ccc;">
             <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
               style="width:18px; vertical-align: middle; margin-right: 8px;">
@@ -283,7 +258,29 @@
                 email: res.kakao_account?.email || "",
                 nickname: res.kakao_account?.profile?.nickname || ""
               };
-              handleSocialLogin(userId, userData);
+              fetch("https://miraclepet.kr/api/social-signup", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(userData)
+              });
+              fetch(`https://miraclepet.kr/api/user/check/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                  localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
+                  if (data.exists) {
+                    // 이미 가입된 사용자 → 바로 메인페이지
+                    window.location.href = "index.html";
+                  } else {
+                    // 신규 사용자 → 추가 정보 입력
+                    window.location.href = "social-signup.html";
+                  }
+                })
+                .catch(error => {
+                  alert("유저 확인 중 오류");
+                  console.error(error);
+                });
             },
             fail: function (error) {
               alert("유저 정보 가져오기 실패");
@@ -297,112 +294,6 @@
         }
       });
     });
-
-    // ✅ 네이버 간편 로그인 팝업 방식
-    document.getElementById("naver-login-btn").addEventListener("click", function() {
-      naverLogin.authorize();
-    });
-
-    // 네이버 인증 후 JS에서 바로 프로필 정보 받아오기
-    window.addEventListener('load', function () {
-      naverLogin.getLoginStatus(function(status) {
-        if (status) {
-          const userId = `naver_${naverLogin.user.getId()}`;
-          const userData = {
-            user_id: userId,
-            email: naverLogin.user.getEmail() || "",
-            nickname: naverLogin.user.getNickName() || ""
-          };
-          handleSocialLogin(userId, userData);
-        }
-      });
-    });
-
-    // ✅ 구글 간편 로그인 팝업 방식
-    document.getElementById("google-login-btn").addEventListener("click", function() {
-      google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // 팝업이 표시되지 않았거나 스킵된 경우
-          console.log('Google login popup not displayed or skipped');
-        }
-      });
-    });
-
-    // 구글 로그인 콜백 처리
-    function handleGoogleCredentialResponse(response) {
-      const credential = response.credential;
-      const payload = JSON.parse(atob(credential.split('.')[1]));
-      const userId = `google_${payload.sub}`;
-      const userData = {
-        user_id: userId,
-        email: payload.email || "",
-        nickname: payload.name || ""
-      };
-      handleSocialLogin(userId, userData);
-    }
-
-    // 소셜 로그인 공통 처리 함수
-    function handleSocialLogin(userId, userData) {
-      // 환경에 따라 소셜 회원가입 요청 경로 분기
-      const socialSignupUrl = "https://miraclepet.kr/api/social-signup";
-      
-      // 소셜 회원가입 요청
-      fetch(socialSignupUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        credentials: 'include',
-        body: JSON.stringify(userData)
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok: ' + response.status);
-        }
-        return response.json();
-      })
-      .then(() => {
-        // 유저 존재 여부 확인
-        const userCheckUrl = `https://miraclepet.kr/api/social-user-exists/${userId}`;
-        return fetch(userCheckUrl, {
-          credentials: 'include'
-        });
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.exists) {
-          // 기존 유저 → 메인으로 이동
-          return fetch(`https://miraclepet.kr/api/user/get/${userId}`, {
-            credentials: 'include'
-          });
-        } else {
-          // 신규 유저 → 추가정보 입력
-          window.location.href = "social-signup.html";
-          return Promise.reject('new user');
-        }
-      })
-      .then(res => res.json())
-      .then(userData => {
-        if (userData && userData.user_id) {
-          localStorage.setItem("user", JSON.stringify(userData));
-          window.location.href = "index.html";
-        } else {
-          throw new Error('Invalid user data');
-        }
-      })
-      .catch(error => {
-        if (error !== 'new user') {
-          console.error('Error during social login:', error);
-          alert("로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
-        }
-      });
-    }
-
-    // 구글 SDK 초기화
-    window.onload = function() {
-      initGoogle();
-    };
   </script>
 
 </body>
