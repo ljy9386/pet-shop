@@ -207,23 +207,37 @@
         console.log("✅ 회원가입 성공");
         
         // ✅ 로그인 상태 유지를 위한 세션 설정
+        console.log("🔑 로그인 시도:", userData.user_id);
         const loginRes = await fetch("https://miraclepet.kr/api/auth/social-login", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          credentials: 'include', // 쿠키 포함
           body: JSON.stringify({ user_id: userData.user_id })
         });
 
+        console.log("📥 로그인 응답 상태:", loginRes.status);
+        const loginData = await loginRes.json();
+        console.log("📥 로그인 응답 데이터:", loginData);
+
         if (!loginRes.ok) {
-          console.error("❌ 로그인 실패");
+          console.error("❌ 로그인 실패:", loginData.message);
           errorMessage.textContent = "로그인 처리 중 오류가 발생했습니다.";
           return;
         }
 
-        const loginData = await loginRes.json();
         console.log("✅ 로그인 성공:", loginData);
 
         // ✅ 로그인 유지
-        localStorage.setItem("user", JSON.stringify(loginData.user));
+        const userToStore = {
+          ...loginData.user,
+          isLoggedIn: true
+        };
+        console.log("💾 저장할 사용자 정보:", userToStore);
+        localStorage.setItem("user", JSON.stringify(userToStore));
+        
         alert("회원가입 완료!");
         location.href = "index.html";
       } catch (err) {

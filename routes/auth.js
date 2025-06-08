@@ -197,23 +197,30 @@ router.get('/google/callback',
 // 소셜 로그인 처리
 router.post('/social-login', async (req, res) => {
   try {
+    console.log("🔑 소셜 로그인 시도:", req.body);
     const { user_id } = req.body;
     
     if (!user_id) {
+      console.log("❌ user_id 누락");
       return res.status(400).json({ message: 'user_id가 필요합니다.' });
     }
 
     const user = await User.findOne({ user_id });
+    console.log("👤 찾은 사용자:", user ? "있음" : "없음");
+    
     if (!user) {
+      console.log("❌ 사용자를 찾을 수 없음:", user_id);
       return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
     }
 
     // 세션에 사용자 정보 저장
-    req.session.user = {
+    const sessionUser = {
       user_id: user.user_id,
       name: user.name,
       provider: user.provider
     };
+    console.log("💾 세션에 저장할 사용자 정보:", sessionUser);
+    req.session.user = sessionUser;
 
     // 클라이언트에 전달할 사용자 정보
     const userData = {
@@ -227,13 +234,19 @@ router.post('/social-login', async (req, res) => {
       provider: user.provider,
       pet: user.pet
     };
+    console.log("📤 클라이언트에 전달할 사용자 정보:", userData);
 
     res.json({ 
       message: '로그인 성공',
       user: userData
     });
+    console.log("✅ 소셜 로그인 성공:", user_id);
   } catch (err) {
-    console.error('❌ 소셜 로그인 에러:', err);
+    console.error('❌ 소셜 로그인 에러:', {
+      message: err.message,
+      stack: err.stack,
+      name: err.name
+    });
     res.status(500).json({ message: '서버 오류', error: err.message });
   }
 });
