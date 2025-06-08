@@ -170,6 +170,7 @@
       }
 
       const baseUser = JSON.parse(localStorage.getItem("pendingSocialUser") || "{}");
+      console.log("📦 localStorage에서 가져온 baseUser:", baseUser);
 
       const userData = {
         ...baseUser,
@@ -183,27 +184,38 @@
           birth: petBirth
         }
       };
+      console.log("📤 서버로 전송할 userData:", userData);
 
       try {
+        console.log("🚀 회원가입 요청 시작");
         const res = await fetch("https://miraclepet.kr/api/social-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(userData)
         });
 
+        console.log("📥 서버 응답 상태:", res.status);
         const data = await res.json();
+        console.log("📥 서버 응답 데이터:", data);
+        
         if (!res.ok) {
-          const errorMessage = document.getElementById("error-message");
+          console.error("❌ 회원가입 실패:", data.message);
           errorMessage.textContent = data.message || "회원가입 실패";
           return;
         }
+
+        console.log("✅ 회원가입 성공");
         // ✅ 로그인 유지
         localStorage.setItem("user", JSON.stringify(userData));
         alert("회원가입 완료!");
         location.href = "index.html";
       } catch (err) {
-        console.error(err);
-        const errorMessage = document.getElementById("error-message");
+        console.error("❌ 회원가입 에러 발생:", err);
+        console.error("에러 상세:", {
+          message: err.message,
+          stack: err.stack,
+          name: err.name
+        });
         errorMessage.textContent = "서버 오류가 발생했습니다.";
       }
     });
