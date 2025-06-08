@@ -230,7 +230,7 @@
 
         const data = await res.json();
         if (!res.ok) {
-          alert(data.message || "로그인 실패");
+          alert(data.message || "로그인 실패!");
         } else {
           alert("WELCOME!");
           localStorage.setItem("user", JSON.stringify(data.user));
