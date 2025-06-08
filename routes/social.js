@@ -39,8 +39,17 @@ router.post("/social-signup", async (req, res) => {
 
     return res.status(200).json({ message: "가입 성공" });
   } catch (err) {
-    console.error("소셜 가입 오류:", err);
-    return res.status(500).json({ message: "서버 오류" });
+    console.error("❌ 소셜 가입 오류:", {
+      message: err.message,
+      stack: err.stack,
+      name: err.name,
+      code: err.code
+    });
+    return res.status(500).json({ 
+      message: "서버 오류", 
+      error: err.message,
+      code: err.code 
+    });
   }
 });
 

@@ -194,35 +194,4 @@ router.get('/google/callback',
   }
 );
 
-router.post('/social-signup', async (req, res) => {
-  try {
-    const { user_id, name, email, nickname, postalCode, address, phone, pet } = req.body;
-
-    // 이미 가입된 유저 체크
-    const existingUser = await User.findOne({ user_id });
-    if (existingUser) {
-      return res.status(400).json({ message: '이미 가입된 유저입니다.' });
-    }
-
-    // 소셜 로그인은 비밀번호 없이 가입 처리
-    const newUser = new User({
-      user_id,
-      name,
-      email,
-      nickname,
-      postalCode,
-      address,
-      phone,
-      pet,
-      password: '', // 소셜 로그인은 비밀번호 없이 가입
-    });
-
-    await newUser.save();
-    res.status(201).json({ message: '소셜 회원가입 성공!' });
-  } catch (err) {
-    console.error('❌ 소셜 회원가입 에러:', err.message);
-    res.status(500).json({ message: '서버 오류', error: err.message });
-  }
-});
-
 module.exports = router;
