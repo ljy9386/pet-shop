@@ -257,39 +257,52 @@
                 email: res.kakao_account?.email || "",
                 nickname: res.kakao_account?.profile?.nickname || ""
               };
-              fetch("https://miraclepet.kr/api/social-signup", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(userData)
-              });
-              fetch(`https://miraclepet.kr/api/user/check/${userId}`)
+
+              // 기존 사용자 확인
+              fetch(`/auth/check-user/${userId}`)
                 .then(response => response.json())
                 .then(data => {
-                  localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
                   if (data.exists) {
-                    // 이미 가입된 사용자 → 바로 메인페이지
-                    window.location.href = "index.html";
+                    // 기존 사용자: 로그인 처리
+                    fetch("/auth/social-login", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({ user_id: userId })
+                    })
+                    .then(response => response.json())
+                    .then(loginData => {
+                      if (loginData.user) {
+                        localStorage.setItem("user", JSON.stringify(loginData.user));
+                        sessionStorage.setItem("user", JSON.stringify(loginData.user));
+                        window.location.href = "index.html";
+                      }
+                    })
+                    .catch(error => {
+                      console.error("로그인 처리 중 오류:", error);
+                      alert("로그인 처리 중 오류가 발생했습니다.");
+                    });
                   } else {
-                    // 신규 사용자 → 추가 정보 입력
+                    // 신규 사용자: 추가 정보 입력 페이지로 이동
+                    localStorage.setItem("pendingSocialUser", JSON.stringify(userData));
                     window.location.href = "social-signup.html";
                   }
                 })
                 .catch(error => {
-                  alert("유저 확인 중 오류");
-                  console.error(error);
+                  console.error("사용자 확인 중 오류:", error);
+                  alert("사용자 확인 중 오류가 발생했습니다.");
                 });
             },
             fail: function (error) {
-              alert("유저 정보 가져오기 실패");
-              console.error(error);
+              console.error("카카오 사용자 정보 조회 실패:", error);
+              alert("카카오 사용자 정보 조회에 실패했습니다.");
             }
           });
         },
         fail: function (err) {
-          alert("카카오 로그인 실패");
-          console.error(err);
+          console.error("카카오 로그인 실패:", err);
+          alert("카카오 로그인에 실패했습니다.");
         }
       });
     });

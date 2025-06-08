@@ -7,6 +7,7 @@ router.post("/social-signup", async (req, res) => {
   try {
     console.log("🔥 받은 데이터:", req.body);
     const {
+      user_id,
       name,
       postalCode,
       address,
@@ -14,19 +15,19 @@ router.post("/social-signup", async (req, res) => {
       pet
     } = req.body;
 
-    if (!name || !phone || !pet?.name || !pet?.breed) {
+    if (!user_id || !name || !phone || !pet?.name || !pet?.breed) {
       return res.status(400).json({ message: "필수 항목 누락" });
     }
 
-    const timestamp = Date.now();
-    if (!timestamp) {
-      console.log("❗ timestamp null 에러 발생");
-      return res.status(500).json({ message: "타임스탬프 오류" });
+    // 기존 사용자 확인
+    const existingUser = await User.findOne({ user_id });
+    if (existingUser) {
+      return res.status(400).json({ message: "이미 가입된 사용자입니다." });
     }
 
     const newUser = new User({
-      user_id: `social_${timestamp}`,
-      password: `socialpass_${timestamp}`,
+      user_id, // 기존 user_id 사용
+      password: `socialpass_${Date.now()}`, // 임시 비밀번호
       name,
       postalCode,
       address,

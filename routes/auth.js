@@ -260,6 +260,51 @@ router.get('/google/callback',
   }
 );
 
+// 소셜 로그인 사용자 확인
+router.get('/check-user/:user_id', async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const user = await User.findOne({ user_id });
+    res.json({ exists: !!user });
+  } catch (err) {
+    console.error('❌ 사용자 확인 에러:', err);
+    res.status(500).json({ message: '서버 오류' });
+  }
+});
 
+// 소셜 로그인 처리
+router.post('/social-login', async (req, res) => {
+  try {
+    const { user_id } = req.body;
+    const user = await User.findOne({ user_id });
+    
+    if (!user) {
+      return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+    }
+
+    // 세션에 사용자 정보 저장
+    req.session.user = {
+      user_id: user.user_id,
+      name: user.name
+    };
+
+    return res.status(200).json({
+      message: '로그인 성공!',
+      user: {
+        user_id: user.user_id,
+        name: user.name,
+        email: user.email,
+        postalCode: user.postalCode,
+        address: user.address,
+        phone: user.phone,
+        admin: user.admin,
+        pet: user.pet
+      }
+    });
+  } catch (err) {
+    console.error('❌ 소셜 로그인 에러:', err);
+    return res.status(500).json({ message: '서버 오류' });
+  }
+});
 
 module.exports = router;
