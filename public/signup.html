@@ -212,6 +212,11 @@
         const petBreed = document.getElementById("pet-breed").value.trim();
         const petBirth = document.getElementById("pet-birth").value;
 
+        if (!user_id) {
+          errorMessage.textContent = "아이디를 입력해주세요.";
+          return;
+        }
+
         if (password.value !== confirmPassword.value) {
           errorMessage.textContent = "비밀번호가 일치하지 않습니다.";
           return;
@@ -245,7 +250,8 @@
           });
 
           const data = await res.json();
-          console.log("서버 응답:", data); // 응답 디버깅
+          console.log("서버 응답:", data);
+          console.log("서버 응답:", 111111111111);
 
           if (!res.ok) {
             errorMessage.textContent = data.message || "회원가입 실패";
