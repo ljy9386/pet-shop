@@ -222,7 +222,7 @@
         console.log("회원가입 요청 데이터:", { user_id, name, email, password: password.value, postalCode, address, phone });
 
         try {
-          const res = await fetch("/api/signup", {
+          const res = await fetch("/auth/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ user_id, name, email, password: password.value, postalCode, address, phone }),
