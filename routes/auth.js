@@ -197,7 +197,12 @@ router.get('/google/callback',
 // 소셜 로그인 처리
 router.post('/social-login', async (req, res) => {
   try {
-    console.log("🔑 소셜 로그인 시도:", req.body);
+    console.log("🔑 소셜 로그인 시도:", {
+      body: req.body,
+      session: req.session,
+      cookies: req.cookies
+    });
+    
     const { user_id } = req.body;
     
     if (!user_id) {
@@ -206,7 +211,11 @@ router.post('/social-login', async (req, res) => {
     }
 
     const user = await User.findOne({ user_id });
-    console.log("👤 찾은 사용자:", user ? "있음" : "없음");
+    console.log("👤 찾은 사용자:", user ? {
+      user_id: user.user_id,
+      name: user.name,
+      provider: user.provider
+    } : "없음");
     
     if (!user) {
       console.log("❌ 사용자를 찾을 수 없음:", user_id);
@@ -217,10 +226,20 @@ router.post('/social-login', async (req, res) => {
     const sessionUser = {
       user_id: user.user_id,
       name: user.name,
-      provider: user.provider
+      provider: user.provider,
+      isLoggedIn: true
     };
     console.log("💾 세션에 저장할 사용자 정보:", sessionUser);
     req.session.user = sessionUser;
+    
+    // 세션 저장 확인
+    req.session.save((err) => {
+      if (err) {
+        console.error("❌ 세션 저장 실패:", err);
+        return res.status(500).json({ message: '세션 저장 실패' });
+      }
+      console.log("✅ 세션 저장 성공");
+    });
 
     // 클라이언트에 전달할 사용자 정보
     const userData = {
@@ -232,7 +251,8 @@ router.post('/social-login', async (req, res) => {
       phone: user.phone,
       admin: user.admin,
       provider: user.provider,
-      pet: user.pet
+      pet: user.pet,
+      isLoggedIn: true
     };
     console.log("📤 클라이언트에 전달할 사용자 정보:", userData);
 

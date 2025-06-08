@@ -238,8 +238,17 @@
         console.log("💾 저장할 사용자 정보:", userToStore);
         localStorage.setItem("user", JSON.stringify(userToStore));
         
+        // 로그 확인을 위한 지연
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         alert("회원가입 완료!");
-        location.href = "index.html";
+        console.log("🔄 페이지 이동 전 최종 상태:", {
+          localStorage: localStorage.getItem("user"),
+          sessionStorage: sessionStorage.getItem("user")
+        });
+        
+        // 페이지 이동
+        window.location.href = "index.html";
       } catch (err) {
         console.error("❌ 회원가입 에러 발생:", err);
         console.error("에러 상세:", {
